@@ -1,0 +1,70 @@
+<?php
+   /**
+    * Template Name: CustomBlogPage
+    *
+    * @package WordPress
+    * @subpackage Twenty_Fourteen
+    * @since Twenty Fourteen 1.0
+    */
+
+   get_header(); ?>
+<style>
+   .col-lg-5.col-sm-6 > p {
+   font-size: 14px;
+   line-height: 1.6;
+   word-wrap: break-word;
+   text-align:justify
+   }
+</style>
+<main main-layout class="trans">
+   <section page__header style="background:url( '<?php bloginfo('template_directory') ; ?>/img/blog-banner.png');background-size:cover;background-position:-363px 0; ">
+      <div class="container">
+         <div class="row">
+            <div class="col-sm-12">
+               <h4>Blog</h4>							<p> Stay connected with us</p>
+            </div>
+         </div>
+      </div>
+   </section>
+   <section class="dP-60">
+      <div class="container" style="margin-top:20px;">
+         <div class="col-md-12">
+            <div class="container">
+               <p>&nbsp;</p>
+               <div class="row">
+                  <div id="menu" class="col-md-12" style="padding:20px;>
+                    <!-- PAge Heading and discription -->
+                     <div style="float: left; width:100% !important;" class="cake-block full-cake">
+                        <h3 class="menu-heading text-center" style="font-size:33px !important;">Blogs</h3>
+                        <p class="description text-center" style="font-size:17px;">Biscotts provide all updates and news about latest things about cakes.
+                        We are established and popular bakery in town together with you, we’re proud to offer an array of desserts  and spreading sweetness to all around.</p>
+                     </div>
+                     <!--  post statrts  -->
+                      <?php $catquery = new WP_Query( 'cat=109&posts_per_page=5' ); ?>
+                      <?php while($catquery->have_posts()) : $catquery->the_post(); ?>
+                     <div>
+                        <div style="; width: 100%; text-align:center;" class="cake-block">
+                           <h3 class="menu-heading text-center" style="font-size:33px !important;"><u><a href="<?php the_permalink() ?>" rel="bookmark"><?php the_title(); ?></a></u></h3>
+                           <img alt="thumb image" class="wp-post-image" src="<?php echo $post_thumbnail_url; ?>" style="width:100%; height:400px;">
+                           <p class="description whole"><span></span>
+                             <div class="entry-content-page">
+                                <?php the_content(); ?> <!-- Page Content -->
+                              </div><!-- .entry-content-page -->
+                           </p>
+                        </div>
+                      </div>
+                      <?php endwhile; ?>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </section>
+   <?php
+       wp_reset_postdata();
+   ?>
+</main>
+
+
+<?php// get_sidebar(); ?>
+<?php get_footer(); ?>

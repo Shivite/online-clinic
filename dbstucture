@@ -1,0 +1,31 @@
+Database structure for patients
+
+APPOINTMENT
+appointmentid |  patient  | prepnurse | physician |    start_dt_time    |     end_dt_time     | examinationroom
+
+DOCTOR
+ID |userId |  specialization  |    signature
+
+DEPARTMENT
+ departmentid |       name       | head
+
+ PROCEDURE
+ code |              name              | cost
+
+ AFFILIATED WITH
+  physician | department | primaryaffiliation
+
+  PATIENT
+  ssn    |       name        |      address       |  phone   | insuranceid | pcp
+
+  PRESCRIBES
+   physician |  patient  | medication |        date         | appointment | dose
+
+   MEDICATION
+    code |     name     |         brand         | description
+VIDEO CONVERSATION
+     stayid |  patient  | room |     start_time      |      end_time
+
+UNDERGOES
+
+  patient  | procedure | stay |        date         | physician | assistingnurse
