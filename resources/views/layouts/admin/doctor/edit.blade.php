@@ -34,29 +34,18 @@
                   </ul>
                 </div>
               </div>
-              <form role="form" id="storeUserForm" action="{{route('doctor.update', $user->id)}}" method="POST" class = "lock_inputs" >
+              <form role="form" enctype="multipart/form-data" id="storeUserForm" action="{{route('doctor.update', $user->id)}}" method="POST" class = "lock_inputs" >
               @csrf
               {{ method_field('PUT') }}
                 <div class="card-body">
-                  @include('admin.doctor.partials.formfield')
-                  <div class = "row">
-                    <div class = "col-md-6"></div>
-                    <div class = "col-md-6">
-                      <div class="form-group">
-                      <label>&nbsp;&nbsp;</label>
-                        <button class="btn btn-block btn-primary send_btn lock_items">
-                         UPDATE &nbsp;
-                      </button>
+                  @include('layouts.admin.doctor.partial.form')
+                  <div class="card-footer">
+                    <button type="submit" class="btn btn-block btn-info send_btn lock_items">
+                     SUBMIT &nbsp;
+                  </button>
 
-                    </div>
-                    </div>
-                  </div>
-                <div class="card-footer">
                 </div>
               </form>
-              <div class="btn btn-block btn-info unlocked_items unlock_inputs">
-               EDIT DETAILS &nbsp;
-            </div>
             </div>
           </div>
         </div>

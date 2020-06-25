@@ -1,4 +1,13 @@
   $(document).ready(function () {
+
+$('.btn-delete').click(function(e){
+       e.preventDefault();
+       alert(12);
+       // $(".lock_inputs :input").prop("disabled", false);
+       // $(".lock_items").css("display", 'block');
+       // $(".unlock_inputs").css("display", 'none');
+       // $('.send_btn').attr('disabled', 'disabled');
+   });
   $('.send_btn').attr('disabled', 'disabled');
   // $(".lock_inputs :input").prop("disabled", true);
   // $(".lock_items").css("display", 'none');
@@ -75,11 +84,12 @@
       $('.send_btn').prop('disabled', 'disabled');
     }
   });
-
+//remove current record
 
   // post setup code
-  $('.send_btn').on('click', function(e) {
+  $('.send_btn1').on('click', function(e) {
       e.preventDefault();
+        alert("here");
       $(this).append(
         '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> Loading...</span> '
       );
@@ -127,9 +137,7 @@
   				console.log("success 200");
   				console.log('data' + data);
   				notifySuccessOrError(200, data.success);
-  				if (typeof data.totalComment !== 'undefined') {
-  					commentElementUpdate(data);
-  				}
+  				$('#update_html').html(data.html);
   			} else {
   				notifySuccessOrError(400, data.errors);
   			}

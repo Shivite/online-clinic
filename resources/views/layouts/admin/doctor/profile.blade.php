@@ -22,12 +22,17 @@
             <div class="card card-primary card-outline">
               <div class="card-body box-profile">
                 <div class="text-center">
-                  <img class="profile-user-img img-fluid img-circle" src="{{asset('images/default/'.$user->doctor->profile_pic)}}" alt="doctor picture">
+                  @if($user->hasRole('doctor'))
+                    @php $imgPath = asset('storage/doctor/profile/'.$user->doctor->profile_pic); @endphp
+                  @else
+                    @php $imgPath = asset('storage/patient/profile/'.$user->doctor->profile_pic); @endphp
+                  @endif
+                  <img class="profile-user-img img-fluid img-circle" src="{{ $imgPath}}" alt="doctor picture">
                 </div>
 
-                <h3 class="profile-username text-center">{{ $user->name }}</h3>
+                <h3 class="profile-username text-center">{{ ucwords($user->name) }}</h3>
 
-                <p class="text-muted text-center">{{ $user->doctor->specialization }}</p>
+                <p class="text-muted text-center">{{ ucwords($user->doctor->specialization) }}</p>
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">

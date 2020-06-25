@@ -43,16 +43,29 @@
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
+        @if((Auth::user()->hasRole('admin')))
         <li class="nav-item">
           <a href="{{ route('admin.users.index')}}" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
             <p>
               Users
-              <span class="right badge badge-danger">New</span>
+              <!-- <span class="right badge badge-danger">New</span> -->
             </p>
           </a>
         </li>
-        <li class="nav-item has-treeview">
+        @endif
+        @if((Auth::user()->hasRole('doctor')))
+        <li class="nav-item">
+          <a href="{{ route('doctor.profile')}}" class="nav-link">
+            <i class="nav-icon fas fa-user-md "></i>
+            <p>
+              My Profile
+              <!-- <span class="right badge badge-danger">New</span> -->
+            </p>
+          </a>
+        </li>
+        @endif
+        <!-- <li class="nav-item has-treeview">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-copy"></i>
             <p>
@@ -69,7 +82,8 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> -->
+
         <li class="nav-item">
           <a class="dropdown-item" href="{{ route('logout') }}"
              onclick="event.preventDefault();
