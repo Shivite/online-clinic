@@ -133,7 +133,7 @@ $('.btn-delete').click(function(e){
   		success: function (data) {
   			data = JSON.parse(data);
   			if (data.response == 200) {
-          resetForm(formId)
+          // resetForm(formId)
   				console.log("success 200");
   				console.log('data' + data);
   				notifySuccessOrError(200, data.success);

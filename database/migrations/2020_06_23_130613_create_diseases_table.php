@@ -18,8 +18,7 @@ class CreateDiseasesTable extends Migration
           $table->unsignedBigInteger('department_id');
           $table->string('name', 60);
           $table->foreign('department_id')
-                          ->references('id')->on('departments');
-          $table->softDeletes();
+                          ->references('id')->on('departments')->onDelete('cascade');;
           $table->timestamps();
         });
     }
