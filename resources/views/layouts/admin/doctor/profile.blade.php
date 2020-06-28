@@ -23,16 +23,16 @@
               <div class="card-body box-profile">
                 <div class="text-center">
                   @if($user->hasRole('doctor'))
-                    @php $imgPath = asset('storage/doctor/profile/'.$user->doctor->profile_pic); @endphp
+                    @php $imgPath = asset('storage/doctor/profile/'.$user->profile->profile_pic); @endphp
                   @else
-                    @php $imgPath = asset('storage/patient/profile/'.$user->doctor->profile_pic); @endphp
+                    @php $imgPath = asset('storage/patient/profile/'.$user->profile->profile_pic); @endphp
                   @endif
                   <img class="profile-user-img img-fluid img-circle" src="{{ $imgPath}}" alt="doctor picture">
                 </div>
 
                 <h3 class="profile-username text-center">{{ ucwords($user->name) }}</h3>
 
-                <p class="text-muted text-center">{{ ucwords($user->doctor->specialization) }}</p>
+                <p class="text-muted text-center">{{ ucwords($user->profile->specialization) }}</p>
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
@@ -58,7 +58,7 @@
                 <strong><i class="fas fa-book mr-1"></i> About Doctor</strong>
 
                 <p class="text-muted">
-                  {{ $user->doctor->about}}
+                  {{ $user->profile->about}}
                 </p>
 
                 <hr>

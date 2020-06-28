@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use App\User;
-use App\Doctor;
+use App\Profile;
 use File;
 use Image;
 use Illuminate\Support\Facades\Storage;
@@ -40,40 +40,35 @@ class DoctorController extends Controller
 
     public function edit($id)
     {
-        if (!Auth::User()->hasRole('doctor')) redirect()->back();
+      if(!Auth::user()->hasRole('doctor')) return abort(404);
         $user = User::findOrFail($id);
         return view('layouts.admin.doctor.edit')->with(['user'=>$user]);
     }
 
     public function update(Request $request, $id)
     {
-
+      if(!Auth::user()->hasRole('doctor')) return abort(404);
       $this->validate($request,[
         'name' => 'required',
-        'email' => 'required|max:255',
         'profile_pic' => 'image|mimes:jpeg,bmp,png,jpg|max:2048',
         'sign' => 'image|mimes:jpeg,bmp,png,jpg|max:2048',
       ]);
 
-        $user =  User::find($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-
-        if($user->hasRole('doctor')){
-          $doctor = Doctor::where('user_id', $user->id)->first();
-
-          if($request->hasFile('profile_pic'))
-              $doctor->profile_pic = $this->imageUpload($request->file('profile_pic'));
-          if($request->hasFile('sign'))
-              $doctor->sign = $this->imageUpload($request->file('sign'));
-
-          $doctor->specialization = $request->specialization;
-          $doctor->about = $request->about;
+      if($user = User::find($id)){
+            $user->name = $request->name;
+            $profile = Profile::where('user_id', $user->id)->first();
+            if ($request->hasFile('profile_pic')) $profile->profile_pic = $this->imageUpload($request->file('profile_pic'), $user);
+            if ($request->hasFile('sign')) $profile->sign = $this->imageUpload($request->file('sign'), $user);
+            $profile->specialization = $request->specialization;
+            $profile->about = $request->about;
+            if($user->save() && $profile->save()){
+              Toastr::success('User updated Successfully :', 'Success');
+              return view('layouts.admin.doctor.profile')->with('user', $user);            }
         }
-        if($user->save() && $doctor->save()){
-          Toastr::success('Doctor updated Successfully :', 'Success');
-          return view('layouts.admin.doctor.profile')->with('user', $user);
-
+        else{
+          Toastr::error('Error in user update ! <br> Please Try later :', 'Error');
+          return view('layouts.admin.user.index')
+              ->with('users', $users);
         }
 
     }

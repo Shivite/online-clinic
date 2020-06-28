@@ -14,7 +14,11 @@
 Route::get('/', function () {
     return view('layouts.frontend.index');
 });
-
+Route::get('registerpatient', 'Patient\PatientController@index')->name('registerpatient');
+Route::post('/registration/create-step1', 'Patient\PatientController@postCreateStep1');
+Route::get('/registration/create-step2', 'Patient\PatientController@createStep2');
+Route::post('/registration/create-step2', 'Patient\PatientController@postCreateStep2');
+Route::post('/patient/remove-image', 'Patient\PatientController@removeImage');
 Auth::routes(['verify' => true ]);
 
 // Route::resource('admin', 'Admin\AdminController');

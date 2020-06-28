@@ -28,6 +28,8 @@ class UserController extends Controller
 
     public function index()
     {
+
+      return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
         $users = $this->allUsersExceptAdmin();
         return view('layouts.admin.user.index')
             ->with('users', $users);
@@ -35,6 +37,7 @@ class UserController extends Controller
 
     public function create()
     {
+        return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
         $roles = Role::where('name', '<>', 'admin')->get();
         $departments = Department::all();
         return view('layouts.admin.user.create')->with(['roles' => $roles, 'departments' => $departments]);
@@ -43,6 +46,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
         $user = new User();
         $this->validate($request,[
           'name' => 'required',
@@ -85,7 +89,7 @@ class UserController extends Controller
 
     public function edit(user $user)
     {
-
+        return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
         if (Gate::denies('edit-users')) return redirect(route('admin.users.index'));
         $roles = Role::where('name', '<>', 'admin')->get();
         return view('layouts.admin.user.edit')
@@ -96,7 +100,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
       // dd($request->post());
-      if (!Auth::user()->hasAnyRole(['doctor','admin'])){
+      if (!Auth::user()->hasAnyRole(['admin'])){
         Toastr::error('Do not have access rights!', 'Error');
         return redirect()->back();
       }

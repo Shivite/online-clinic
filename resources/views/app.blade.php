@@ -4,7 +4,7 @@
         @include('layouts.partials.header')
 
     </head>
-    <body  class="{{ Request::path() == 'login' || Request::path() == 'register' || Request::path() == '/' ? 'background-image' : '' }}" >
+    <body  class="{{  Request::path() == 'registerpatient'  || Request::path() == 'registration/create-step2'  || Request::path() == 'login' || Request::path() == 'register' || Request::path() == '/' ? 'background-image' : '' }}" >
       <div class="wrapper">
         <!-- @include('layouts.partials.alert') -->
         @yield('content')
