@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     public function diseases(){
-      return $this->belongsToMany('App\Diseases');
+      return $this->belongsToMany('App\Disease');
     }
 
     public function users(){

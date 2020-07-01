@@ -1,11 +1,11 @@
-<nav class="navbar navbar-expand-md shadow-sm">
+<nav class="navbar navbar-expand-md shadow-sm special-card"" >
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
                   <img src="{{asset('images/logo.png')}}" width="60%;" alt="PR MEdication" class="brand-imageelevation-3"
                        style="opacity: .8">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"><i class="fa fa-bars" aria-hidden="true"></i></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -26,7 +26,7 @@
                             </li>
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('New Patient') }}</a>
+                                    <a class="nav-link" href="{{ route('registerpatient') }}">{{ __('New Patient') }}</a>
                                 </li>
                             @endif
                         @else
@@ -48,3 +48,4 @@
                 </div>
             </div>
         </nav>
+<br><br>

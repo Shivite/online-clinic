@@ -10930,6 +10930,7 @@ a.text-dark:focus {
 .background-image{
    background: url("/images/bg_3.jpg");
    background-repeat: no-repeat, repeat;
+  background-size: cover;
 }
 
 .row.justify-content-center {
@@ -10937,7 +10938,7 @@ a.text-dark:focus {
 }
 .special-card {
   background-color: rgba(245, 245, 245, 1);
-  opacity: .79;
+  opacity: .75;
 }
 
 .btn-border {
@@ -10947,4 +10948,22 @@ a.text-dark:focus {
   padding: 14px 28px;
   font-size: 16px;
   cursor: pointer;
+}
+.same_height{
+    padding-top: 50px;
+    height: 293px;
+}
+
+.same_height{
+  height: 293px;
+    /* height: calc(100% - 15px); */
+    margin-bottom: 15px;
+}
+
+#appointment_date   {
+    background: aliceblue;
+}
+#appointment_date thead {
+    background: deepskyblue;
+    color: white !important;
 }

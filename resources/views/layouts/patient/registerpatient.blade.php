@@ -1,14 +1,13 @@
 @extends('layouts.frontend.index')
 @section('pagespecificstyles')
-<link href="{{ asset('/plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet">
-
-<link href="{{ asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
-
-
+<link href="{{ asset('/css/required/daterangepicker.css') }}" rel="stylesheet">
+<link href="{{ asset('/css/required/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
 @endsection
 
 @section('content')
 @include('layouts.frontend.menu')
+
+<div class="container">
 
 <div class=" row  justify-content-center">
   <div class="col-md-10">
@@ -16,7 +15,7 @@
           <div class="card-body box-profile">
             <h3 class="text-center">New Patient Registration</h3>
             <p class="text-muted"> </p>
-            <form action="/registration/create-step1" method="POST">
+            <form action="{{route('patient.registration')}}" method="POST">
             @csrf
                 <div class="row">
                   <div class="col-sm-2">
@@ -320,14 +319,15 @@
     </div>
 </div>
 </div>
-
+<!-- Content here -->
+</div>
 @endsection
 
 @section('pagespecificscripts')
-<script src="{{ asset('plugins/moment/moment.min.js') }}"></script>
-<script src="{{ asset('plugins/daterangepicker/daterangepicker.js') }}" defer></script>
-<script src="{{ asset('plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js')}}"></script>
-<script src="{{ asset('js/forms/custom-country-selection.js') }}" defer></script>
+<script src="{{ asset('js/required/moment.min.js') }}"></script>
+<script src="{{ asset('js/required/daterangepicker.js') }}" ></script>
+<script src="{{ asset('js/required/tempusdominus-bootstrap-4.min.js')}}"></script>
+<script src="{{ asset('js/forms/custom-country-selection.js') }}" ></script>
 
 <script>
   $(function () {

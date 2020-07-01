@@ -2,7 +2,7 @@
 
 $('.btn-delete').click(function(e){
        e.preventDefault();
-       alert(12);
+       
        // $(".lock_inputs :input").prop("disabled", false);
        // $(".lock_items").css("display", 'block');
        // $(".unlock_inputs").css("display", 'none');

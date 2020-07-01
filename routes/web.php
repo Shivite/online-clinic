@@ -15,9 +15,14 @@ Route::get('/', function () {
     return view('layouts.frontend.index');
 });
 Route::get('registerpatient', 'Patient\PatientController@index')->name('registerpatient');
-Route::post('/registration/create-step1', 'Patient\PatientController@postCreateStep1');
-Route::get('/registration/create-step2', 'Patient\PatientController@createStep2');
-Route::post('/registration/create-step2', 'Patient\PatientController@postCreateStep2');
+Route::post('/registration/register/patient', 'Patient\PatientController@postResiterPatient')->name('patient.registration');
+Route::get('/registration/department', 'Patient\PatientController@registerDepartment')->name('patient.department');
+Route::post('/registration/patient/department', 'Patient\PatientController@postregisterDepartment')->name('register-department');
+Route::post('/registration/patient/reports', 'Patient\PatientController@postRegisterReports')->name('register.reports');
+Route::get('/registration/reports', 'Patient\PatientController@registerReports')->name('patient.reports');
+Route::get('/registration/appointment', 'Patient\PatientController@registerAppointment')->name('patient.appintment');
+Route::post('/registration/patient/appointment', 'Patient\PatientController@postRegisterAppointment')->name('register.appointment');
+Route::get('/registration/payment', 'Patient\PatientController@registerPayment')->name('patient.payment');
 Route::post('/patient/remove-image', 'Patient\PatientController@removeImage');
 Auth::routes(['verify' => true ]);
 

@@ -15,10 +15,9 @@ class CreateDiseasesTable extends Migration
     {
         Schema::create('diseases', function (Blueprint $table) {
           $table->bigIncrements('id');
-          $table->unsignedBigInteger('department_id');
+          
           $table->string('name', 60);
-          $table->foreign('department_id')
-                          ->references('id')->on('departments')->onDelete('cascade');;
+
           $table->timestamps();
         });
     }

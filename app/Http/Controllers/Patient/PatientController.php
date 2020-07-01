@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Patient;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\PatientDetail;
+use App\Department;
+use File;
+use Image;
+use Illuminate\Support\Facades\Storage;
 class PatientController extends Controller
 {
     public function index( Request $request)
@@ -14,7 +18,7 @@ class PatientController extends Controller
         return view('layouts.patient.registerpatient')->with('patient',$patient);
     }
 
-    public function postCreateStep1(Request $request)
+    public function postResiterPatient(Request $request)
    {
         // dd($request->post());
        $validatedData = $request->validate([
@@ -37,7 +41,7 @@ class PatientController extends Controller
             "occupaton" =>  "required",
             "marital" =>  "required",
        ]);
-       // dd($request->post());
+
        if(empty($request->session()->get('patient'))){
            $patient = new PatientDetail();
            $patient->fill($validatedData);
@@ -47,37 +51,83 @@ class PatientController extends Controller
            $patient->fill($validatedData);
            $request->session()->put('patient', $patient);
        }
-       // dd($request->session());
-       return redirect('/registration/create-step2');
+       return redirect('registration/department');
 
    }
 
-   public function createStep2(Request $request)
+   public function registerDepartment(Request $request)
     {
-        $patient = $request->session()->get('patient');
-        return view('layouts.patient.create-step2',compact('patient', $patient));
+        $departments = Department::all();
+        return view('layouts.patient.registerdepartment')->with(['departments' => $departments]);
     }
 
-    public function postCreateStep2(Request $request)
+    public function postregisterDepartment(Request $request)
    {
-       $patient = $patient->session()->get('patient');
-       if(!isset($patient->photo)) {
-           $request->validate([
-               'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-           ]);
-
-           $fileName = "productImage-" . time() . '.' . request()->photo->getClientOriginalExtension();
-
-           $request->photo->storeAs('photo', $fileName);
-
-           $patient = $request->session()->get('patient');
-
-           $patient->photo = $fileName;
-           $request->session()->put('patient', $patient);
-       }
-       return redirect('/registration/create-step3');
+       $patient = $request->session()->get('patient');
+       $patient->disease = $request->diseaseId;
+       $request->session()->put('patient', $patient);
+       return response()->json([
+         'success'=>true,
+         'url'=> route('patient.reports', ['patient' => $patient ])
+       ]);
 
    }
+   public function registerReports( Request $request){
+     $patient = $request->session()->get('patient');
+     return view('layouts.patient.registerreports')->with(['patient' => $patient]);
+
+   }
+
+   public  function postRegisterReports(Request $request){
+     $patient = $request->session()->get('patient');
+
+     $request->validate([
+       'uploadreport1' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport2' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport3' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport4' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport5' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport6' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport7' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport8' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport9' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport10' => 'image|mimes:jpeg,png,jpg |max:2048',
+    ]);
+    if ($request->hasFile('uploadreport1')) $patient->uploadreport1 = $this->imageUpload($request->file('uploadreport1'), $patient);
+    if ($request->hasFile('uploadreport2')) $patient->uploadreport2 = $this->imageUpload($request->file('uploadreport2'), $patient);
+    if ($request->hasFile('uploadreport3')) $patient->uploadreport3 = $this->imageUpload($request->file('uploadreport3'), $patient);
+    if ($request->hasFile('uploadreport4')) $patient->uploadreport4 = $this->imageUpload($request->file('uploadreport4'), $patient);
+    if ($request->hasFile('uploadreport5')) $patient->uploadreport5 = $this->imageUpload($request->file('uploadreport5'), $patient);
+    if ($request->hasFile('uploadreport6')) $patient->uploadreport6 = $this->imageUpload($request->file('uploadreport6'), $patient);
+    if ($request->hasFile('uploadreport7')) $patient->uploadreport7 = $this->imageUpload($request->file('uploadreport7'), $patient);
+    if ($request->hasFile('uploadreport8')) $patient->uploadreport8 = $this->imageUpload($request->file('uploadreport8'), $patient);
+    if ($request->hasFile('uploadreport9')) $patient->uploadreport9 = $this->imageUpload($request->file('uploadreport9'), $patient);
+    if ($request->hasFile('uploadreport10')) $patient->uploadreport10 = $this->imageUpload($request->file('uploadreport10'), $patient);
+    $request->session()->put('patient', $patient);
+    return view('layouts.patient.registerappintment')->with('patient', $patient);
+   }
+
+
+
+    public function postRegisterAppointment(Request $request)
+    {
+        $patient = $request->session()->get('patient');
+        $patient->appointment = $request->appointment;
+        $request->session()->put('patient', $patient);
+        return response()->json([
+          'success'=>true,
+          'url'=> route('patient.payment', ['patient' => $patient ])
+        ]);
+
+    }
+
+    public function registerPayment( Request $request){
+
+      $patient = $request->session()->get('patient');
+      dd($patient);
+      return view('layouts.patient.registerpayment')->with(['patient' => $patient]);
+
+    }
 
    public function removeImage(Request $request)
     {
@@ -167,4 +217,28 @@ class PatientController extends Controller
     {
         //
     }
+
+    public function imageUpload($img, $user )    {
+        $number = mt_rand(1000000000, 9999999999);
+        $folder = 'patient';
+        $patientFolder = $user->email;
+        if (isset($img))
+        {
+            $imgName = $number . '-' . time() . '.' . request()->uploadreport1->getClientOriginalExtension();
+            if (!Storage::disk('public')
+                ->exists($folder))
+                  Storage::disk('public')->makeDirectory($folder);
+            if (!Storage::disk('patient')
+                ->exists($patientFolder))
+                  Storage::disk('patient')->makeDirectory($patientFolder);
+            $customImage = Image::make($img)->resize(150, 150)->save($imgName, 90);
+            Storage::disk('patient')->put($patientFolder.'/'.  $imgName, $customImage);
+        }
+        else
+        {
+            $imgName = "doctor.png";
+        }
+        return $imgName;
+    }
+
 }
