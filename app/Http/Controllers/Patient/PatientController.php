@@ -14,11 +14,10 @@ class PatientController extends Controller
     public function index( Request $request)
     {
         $patient = $request->session()->get('patient');
-        // dd($patient);
         return view('layouts.patient.registerpatient')->with('patient',$patient);
     }
 
-    public function postResiterPatient(Request $request)
+   public function postResiterPatient(Request $request)
    {
         // dd($request->post());
        $validatedData = $request->validate([
@@ -122,11 +121,8 @@ class PatientController extends Controller
     }
 
     public function registerPayment( Request $request){
-
       $patient = $request->session()->get('patient');
-      dd($patient);
       return view('layouts.patient.registerpayment')->with(['patient' => $patient]);
-
     }
 
    public function removeImage(Request $request)

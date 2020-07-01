@@ -11,7 +11,7 @@
           </div>
           <h3 class="text-center">P R Medication</h3>
           <p class="text-muted text-center">India's First Online Cancer Clinic</p>
-          <a href="{{ route('register')}}" class="btn btn-block btn-info btn-xs">{{ __('New Patient') }}</a>
+          <a href="{{ route('registerpatient')}}" class="btn btn-block btn-info btn-xs">{{ __('New Patient') }}</a>
           <a href="{{ route('login') }}" class="btn btn-block btn-info btn-xs">EXISTING PATIENT</a>
           <p class="text-muted"> </p>
           <hr>

@@ -1,10 +1,5 @@
 @extends('layouts.frontend.index')
 @section('pagespecificstyles')
-<link href="{{ asset('/plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet">
-
-<link href="{{ asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
-
-
 @endsection
 
 @section('content')
@@ -59,34 +54,7 @@
 </div>
 </div>
 </div>
-
 @endsection
 
 @section('pagespecificscripts')
-
-<script>
-  $(function () {
-      $('.dept_select').click(function(e){
-        e.preventDefault();
-        $.ajax({
-           type:'POST',
-           url:'/registration/patient/department',
-           dataType:'json',
-           data:{
-               '_token' : '<?php echo csrf_token() ?>',
-               'diseaseId' : $(this).attr("data-id"),
-           },
-          success: function(data)
-          {
-           if(data.success)
-            {
-                window.location = data.url
-            }
-          }
-        });
-      });
-  });
-
-</script>
-
 @endsection
