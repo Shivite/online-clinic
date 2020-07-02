@@ -26,27 +26,31 @@ class PatientController extends Controller
 
    public function postResiterPatient(Request $request)
    {
-        // dd($request->post());
        $validatedData = $request->validate([
             "title" => "required",
             "name" => "required",
             "number" => "required|min:10|numeric",
             "alt_number" => "min:10|numeric",
-            // "password" => "required",
+            "password" => "required",
             "email" => "required|unique:users",
             "address" => "required",
             "pin" =>  "required|min:10|numeric",
             "legalgaurdian" =>  "required",
             "country" =>  "required",
             "dob" =>  "required",
-            // "docname" =>  "required",
+            "docname" =>  "",
             "age" =>  "required",
             "gender" =>  "required",
             "language" =>  "required",
             "religion" =>  "required",
             "occupaton" =>  "required",
             "marital" =>  "required",
+            'photo' => 'required |image|mimes:jpeg,png,jpg |max:2048 ',
+            'proof' => 'required |image|mimes:jpeg,png,jpg  |max:2048 ',
        ]);
+
+      if ($request->hasFile('photo')) $validatedData['photo'] = $this->imageUpload($request->file('photo'), 'profile', 'photo' );
+      if ($request->hasFile('proof')) $validatedData['proof'] = $this->imageUpload($request->file('proof'), 'profile', 'proof');
 
        if(empty($request->session()->get('patient'))){
            $patient = new PatientDetail();
@@ -57,6 +61,7 @@ class PatientController extends Controller
            $patient->fill($validatedData);
            $request->session()->put('patient', $patient);
        }
+       // dd($patient);
        return redirect('registration/department');
 
    }
@@ -100,16 +105,16 @@ class PatientController extends Controller
        'uploadreport9' => 'image|mimes:jpeg,png,jpg |max:2048',
        'uploadreport10' => 'image|mimes:jpeg,png,jpg |max:2048',
     ]);
-    if ($request->hasFile('uploadreport1')) $patient->uploadreport1 = $this->imageUpload($request->file('uploadreport1'), $patient);
-    if ($request->hasFile('uploadreport2')) $patient->uploadreport2 = $this->imageUpload($request->file('uploadreport2'), $patient);
-    if ($request->hasFile('uploadreport3')) $patient->uploadreport3 = $this->imageUpload($request->file('uploadreport3'), $patient);
-    if ($request->hasFile('uploadreport4')) $patient->uploadreport4 = $this->imageUpload($request->file('uploadreport4'), $patient);
-    if ($request->hasFile('uploadreport5')) $patient->uploadreport5 = $this->imageUpload($request->file('uploadreport5'), $patient);
-    if ($request->hasFile('uploadreport6')) $patient->uploadreport6 = $this->imageUpload($request->file('uploadreport6'), $patient);
-    if ($request->hasFile('uploadreport7')) $patient->uploadreport7 = $this->imageUpload($request->file('uploadreport7'), $patient);
-    if ($request->hasFile('uploadreport8')) $patient->uploadreport8 = $this->imageUpload($request->file('uploadreport8'), $patient);
-    if ($request->hasFile('uploadreport9')) $patient->uploadreport9 = $this->imageUpload($request->file('uploadreport9'), $patient);
-    if ($request->hasFile('uploadreport10')) $patient->uploadreport10 = $this->imageUpload($request->file('uploadreport10'), $patient);
+    if ($request->hasFile('uploadreport1')) $patient->uploadreport1 = $this->imageUpload($request->file('uploadreport1'), $patient. 'uploadreport1');
+    if ($request->hasFile('uploadreport2')) $patient->uploadreport2 = $this->imageUpload($request->file('uploadreport2'), $patient, 'uploadreport2');
+    if ($request->hasFile('uploadreport3')) $patient->uploadreport3 = $this->imageUpload($request->file('uploadreport3'), $patient, 'uploadreport3');
+    if ($request->hasFile('uploadreport4')) $patient->uploadreport4 = $this->imageUpload($request->file('uploadreport4'), $patient, 'uploadreport4');
+    if ($request->hasFile('uploadreport5')) $patient->uploadreport5 = $this->imageUpload($request->file('uploadreport5'), $patient, 'uploadreport5');
+    if ($request->hasFile('uploadreport6')) $patient->uploadreport6 = $this->imageUpload($request->file('uploadreport6'), $patient, 'uploadreport6');
+    if ($request->hasFile('uploadreport7')) $patient->uploadreport7 = $this->imageUpload($request->file('uploadreport7'), $patient, 'uploadreport7');
+    if ($request->hasFile('uploadreport8')) $patient->uploadreport8 = $this->imageUpload($request->file('uploadreport8'), $patient, 'uploadreport8');
+    if ($request->hasFile('uploadreport9')) $patient->uploadreport9 = $this->imageUpload($request->file('uploadreport9'), $patient, 'uploadreport9');
+    if ($request->hasFile('uploadreport10')) $patient->uploadreport10 = $this->imageUpload($request->file('uploadreport10'), $patient, 'uploadreport10');
     $request->session()->put('patient', $patient);
     return view('layouts.patient.registerappintment')->with('patient', $patient);
    }
@@ -240,13 +245,13 @@ class PatientController extends Controller
         //
     }
 
-    public function imageUpload($img, $user )    {
+    public function imageUpload($img, $user, $name )    {
+      $patientFolder = ($user == 'profile') ? $user : $user->email;;
         $number = mt_rand(1000000000, 9999999999);
         $folder = 'patient';
-        $patientFolder = $user->email;
         if (isset($img))
         {
-            $imgName = $number . '-' . time() . '.' . request()->uploadreport1->getClientOriginalExtension();
+            $imgName = $number . '-' . time() . '.' . request()->$name->getClientOriginalExtension();
             if (!Storage::disk('public')
                 ->exists($folder))
                   Storage::disk('public')->makeDirectory($folder);
@@ -262,6 +267,8 @@ class PatientController extends Controller
         }
         return $imgName;
     }
+
+
 
     public function razorPaymentComplete(Request $request){
 

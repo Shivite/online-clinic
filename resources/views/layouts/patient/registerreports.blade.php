@@ -1,10 +1,5 @@
 @extends('layouts.frontend.index')
 @section('pagespecificstyles')
-<link href="{{ asset('/plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet">
-
-<link href="{{ asset('/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}" rel="stylesheet">
-
-
 @endsection
 
 @section('content')
@@ -174,7 +169,7 @@
                 <div class="col-sm-3">
                   <div class="form-group">
                     <label>&nbsp;&nbsp;</label>
-                      <a class="btn btn-block btn-primary">
+                      <a href= "{{route('patient.department')}}" class="btn btn-block btn-primary">
                       <i class="fas fa-arrow-left "></i>&nbsp; PREVIOUS
                     </a>
                     </button>
@@ -206,7 +201,6 @@
 
 @section('pagespecificscripts')
 <script src="{{ asset('js/required/bs-custom-file-input.min.js') }}" defer></script>
-
 <script>
   $(function () {
     bsCustomFileInput.init();

@@ -14,4 +14,5 @@
 <link href="{{ asset('css/required/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/required/responsive.bootstrap4.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/toastr.min.css') }}" rel="stylesheet">
+
 @yield('pagespecificstyles')

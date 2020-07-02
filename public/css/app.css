@@ -10967,3 +10967,11 @@ a.text-dark:focus {
     background: deepskyblue;
     color: white !important;
 }
+
+.custom-err{
+
+}
+label.error {
+  float: none; color: red;   color: red;
+    font-size: 11px;
+    font-weight: 500;}

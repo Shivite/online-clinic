@@ -51,17 +51,6 @@
                 @endforeach
 
             </div>
-            <div class = "row">
-              <div class="col-sm-3"></div><div class="col-sm-3"></div><div class="col-sm-3"></div>
-              <div class="col-sm-3">
-              <div class="form-group float-right">
-                <label>&nbsp;&nbsp;</label>
-                  <a href= "{{route('registerpatient')}}" class="btn btn-block btn-primary">
-                  <i class="fas fa-arrow-left "></i>&nbsp; PREVIOUS
-                </a>
-                </button>
-              </div>
-            </div></div>
 
 
           </div>

@@ -20,7 +20,7 @@
                 <div class="col-sm-3">
                   <div class="form-group">
                     <label>&nbsp;&nbsp;</label>
-                      <a class="btn btn-block btn-primary">
+                      <a href = "{{route('patient.reports')}}" class="btn btn-block btn-info">
                       <i class="fas fa-arrow-left "></i>&nbsp; PREVIOUS
                     </a>
                     </button>
@@ -34,7 +34,7 @@
                             <div class="col-sm-3">
                               <div class="form-group">
                                 <label>&nbsp;&nbsp;</label>
-                                  <button class="btn btn-block btn-primary submit-appointment">
+                                  <button class="btn btn-block btn-info submit-appointment">
                                    NEXT &nbsp; <i class="fas fa-arrow-right "></i>
                                 </button>
                               </div>
