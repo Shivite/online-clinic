@@ -38,7 +38,7 @@
                       <ul class="nav nav-pills flex-column">
                         @foreach($department->diseases as $disease)
                         <li class="nav-item active">
-                          <div class="nav-link dept_select" data-id="{{ $disease->id}}">
+                          <div class="nav-link dept_select" data-id="{{ $disease->id}}" data-dept="{{ $department->id}}">
                             {{ strtoupper($disease->name)}}
                           </div>
                         </li>
@@ -75,6 +75,7 @@
            data:{
                '_token' : '<?php echo csrf_token() ?>',
                'diseaseId' : $(this).attr("data-id"),
+               'departmentId' : $(this).attr("data-dept"),
            },
           success: function(data)
           {

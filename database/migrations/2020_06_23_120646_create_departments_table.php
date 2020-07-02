@@ -17,6 +17,7 @@ class CreateDepartmentsTable extends Migration
           $table->bigIncrements('id');
           $table->string('name', 60);
           $table->string('image', 100)->nullable();
+          $table->decimal('fee', 15.2)->nullable();
           $table->timestamps();
         });
     }

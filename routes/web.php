@@ -22,7 +22,19 @@ Route::post('/registration/patient/reports', 'Patient\PatientController@postRegi
 Route::get('/registration/reports', 'Patient\PatientController@registerReports')->name('patient.reports');
 Route::get('/registration/appointment', 'Patient\PatientController@registerAppointment')->name('patient.appintment');
 Route::post('/registration/patient/appointment', 'Patient\PatientController@postRegisterAppointment')->name('register.appointment');
-Route::get('/registration/payment', 'Patient\PatientController@registerPayment')->name('patient.payment');
+
+Route::post('/registration/payment/Complete', 'Patient\PatientController@razorPaymentComplete')->name('patient.payment');
+
+Route::get('/payment-complete', function(){
+  return view('layouts.patient.paymentsuccess');
+})->name('payment.success');
+Route::get('/payment-failure', function(){
+  return view('layouts.patient.paymentfailure');
+})->name('payment.fail');
+
+
+
+
 Route::post('/patient/remove-image', 'Patient\PatientController@removeImage');
 Auth::routes(['verify' => true ]);
 

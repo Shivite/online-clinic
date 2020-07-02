@@ -6,7 +6,7 @@
 @section('content')
 @include('layouts.frontend.menu')
 <div class=" row  justify-content-center">
-  <div class="col-md-10">
+  <div class="col-md-10 newHtml">
       <div class="card card-primary card-outline special-card" >
           <div class="card-body box-profile">
             <h3 class="text-center">Appointment Date & Time</h3>
@@ -52,6 +52,9 @@
 <script src="{{ asset('js/required/moment.min.js') }}"></script>
 <script src="{{ asset('js/required/daterangepicker.js') }}" ></script>
 <script src="{{ asset('js/required/tempusdominus-bootstrap-4.min.js')}}"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- <script src="{{ asset('js/required/payment.js')}}"></script> -->
+
 <script>
   $(function () {
     var appointment = null;
@@ -70,6 +73,10 @@ console.log(date);
 
    $('.submit-appointment').click(function(e){
      e.preventDefault();
+     $(this).append(
+       '<span class=" spiner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> '
+     );
+     // $('.spiner').addClass('d-none')
      $.ajax({
         type:'POST',
         url:'/registration/patient/appointment',
@@ -78,14 +85,68 @@ console.log(date);
             '_token' : '<?php echo csrf_token() ?>',
             'appointment' : window.appointment,
         },
+
        success: function(data)
        {
-        if(data.success)
+         console.log(data);
+         if(data.success)
          {
-             window.location = data.url
+            $('.spiner').addClass('d-none');
+                 console.log(data.values);
+                  var options = {
+                   "key": data.values.razorpayId, // Enter the Key ID generated from the Dashboard
+                   "amount": data.values.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+                   "currency": data.values.currency,
+                   "name": data.values.name,
+                   "description": data.values.discription,
+                   "image": "{{asset('images/logo.png')}}",
+                   "order_id": data.values.orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+                   "handler": function (response){
+                     alert(response.razorpay_payment_id);
+                       $.ajax({
+                          type:'POST',
+                          url:'/registration/payment/Complete',
+                          dataType:'json',
+                          data:{
+                              '_token' : '<?php echo csrf_token() ?>',
+                              'rzp_paymentid': response.razorpay_payment_id,
+                              'rzp_orderid': response.razorpay_order_id,
+                              'rzp_signature': response.razorpay_signature,
+                          },
+                         success: function(data)
+                         {
+                            window.location = data.url;
+                         },
+                         error: function(data)
+                         {
+                           console.log(data);
+                            console.log('completio eror');
+                         },
+                       }); //child hander request
+                     }, //handler
+                   "prefill": {
+                       "name": data.values.name,
+                       "email": data.values.email,
+                       "contact": data.values.contactNumber,
+                   },
+                   "notes": {
+                       "address": "address",
+                   },
+                   "theme": {
+                       "color": "#60C5FB"
+                   }
+                 };
+                 var rzp1 = new Razorpay(options);
+                 rzp1.open();
+                 e.preventDefault();
          }
-       }
-     });
+       }, // parent request success end
+       error: function(data)
+       {
+         console.log(data);
+          $('.spiner').addClass('d-none');
+       },
+     }); //patrent ajax end
    });
 });
 

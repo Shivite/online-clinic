@@ -21,25 +21,29 @@ class DepartmentsTableSeeder extends Seeder
 
         'name'    => 'covid-19',
         'image'    => 'corona.webp',
+        'fee'     =>   600
       ]);
      Department::create([
 
         'name'    => 'oncology',
         'image'    => 'oncology.png',
-
+        'fee'     =>   2000
       ]);
       Department::create([
 
         'name'    => 'gastro & proctology',
         'image'    => 'gastro-proctology.png',
+        'fee'     =>   1000
       ]);Department::create([
 
         'name'    => 'pulmonology & allergy',
         'image'    => 'pulmonology.png',
+        'fee'     =>   1000
       ]);Department::create([
 
         'name'    => 'corthopedic',
         'image'    => 'cortopedic.png',
+        'fee'     =>   1500
       ]);
     }
 }

@@ -9,8 +9,15 @@ use App\Department;
 use File;
 use Image;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Razorpay\Api\Api;
+
 class PatientController extends Controller
 {
+    private $razorpayId= 'rzp_test_1z4vEE23O5vJ6R';
+    private $razorpayKey= 'QQOe1YLieKNYPRwK4lL6x1fd' ;
+
+
     public function index( Request $request)
     {
         $patient = $request->session()->get('patient');
@@ -64,6 +71,7 @@ class PatientController extends Controller
    {
        $patient = $request->session()->get('patient');
        $patient->disease = $request->diseaseId;
+       $patient->department = $request->departmentId;
        $request->session()->put('patient', $patient);
        return response()->json([
          'success'=>true,
@@ -110,19 +118,37 @@ class PatientController extends Controller
 
     public function postRegisterAppointment(Request $request)
     {
+
         $patient = $request->session()->get('patient');
         $patient->appointment = $request->appointment;
         $request->session()->put('patient', $patient);
+
+
+        $api = new Api($this->razorpayId, $this->razorpayKey);
+        $patient = $request->session()->get('patient');
+        $department = Department::find($patient->department);
+        $receiptId = Str::random(20);
+        $order = $api->order->create(array(
+          'receipt' => $receiptId,
+          'amount' => $department->fee * 100,
+          'currency' => 'INR'
+          )
+        );
+        $response = [
+                'orderId'=> $order['id'],
+                'razorpayId' => $this->razorpayId,
+                'amount' => $department->fee * 100,
+                'name'=> $patient->name,
+                'currency' => 'INR',
+                'email' => $patient->email,
+                'contactNumber' => $patient->number,
+                'address' => $patient->address,
+                'discription' => 'Appotment for ' .$department->name. 'Department!',
+        ];
         return response()->json([
           'success'=>true,
-          'url'=> route('patient.payment', ['patient' => $patient ])
+          'values'=> $response,
         ]);
-
-    }
-
-    public function registerPayment( Request $request){
-      $patient = $request->session()->get('patient');
-      return view('layouts.patient.registerpayment')->with(['patient' => $patient]);
     }
 
    public function removeImage(Request $request)
@@ -156,8 +182,8 @@ class PatientController extends Controller
     public function create()
     {
         //
-    }
 
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -235,6 +261,34 @@ class PatientController extends Controller
             $imgName = "doctor.png";
         }
         return $imgName;
+    }
+
+    public function razorPaymentComplete(Request $request){
+
+      $_signatureStatus= $this->signatureVarify(  $request->rzp_paymentid,  $request->rzp_orderid,  $request->rzp_signature);
+
+      if($_signatureStatus == true)
+        return response()->json([
+          'success'=>true,
+          'url'=> route('payment.success')
+        ]);
+      else
+        return response()->json([
+          'success'=>false,
+          'url'=> route('patient.fail')
+        ]);
+    }
+
+    public function signatureVarify($pID, $oId, $sign){
+      try{
+        $api = new Api($this->razorpayId, $this->razorpayKey);
+        $attributes  = array('razorpay_signature'  => $sign,  'razorpay_payment_id'  => $pID ,  'razorpay_order_id' => $oId);
+        $order  = $api->utility->verifyPaymentSignature($attributes);
+        return true;
+      }
+      catch(\Exception $e){
+        return false;
+      }
     }
 
 }
