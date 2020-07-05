@@ -50,8 +50,8 @@
 </div>
 @endsection
 @section('pagespecificscripts')
-<script src="{{ asset('plugins/jquery-validation/jquery.validate.min.js') }}" defer></script>
-<script src="{{ asset('/plugins/jquery-validation/additional-methods.min.js') }}" defer></script>
+<script src="{{ asset('js/required/jquery.validate.min.js') }}" defer></script>
+<script src="{{ asset('js/required/additional-methods.min.js') }}" defer></script>
 <script src="{{ asset('js/forms/custom-validation.js') }}" defer></script>
 <script src="../.."></script>
 @endsection

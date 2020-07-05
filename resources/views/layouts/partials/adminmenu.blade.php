@@ -34,7 +34,7 @@
           <img src="" class="img-circle elevation-2" alt="">
         </div>
       <div class="info">
-          <a href="#" class="d-block">admin </a>
+          <a href="#" class="d-block"><b>{{ucwords(Auth::user()->name) }}</b> </a>
       </div>
     </div>
 

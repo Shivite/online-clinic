@@ -4,18 +4,19 @@
     <label for="email">Profile Picture</label>
     <div class="direct-chat-msg">
       @if($user->hasRole('doctor'))
-        @php $imgPath = asset('storage/doctor/profile/'.$user->profile->profile_pic); @endphp
+      @php $profilePic = asset('storage/doctor/doctor/'.$user->doctor->profile_pic); @endphp
+      @php $sign = asset('storage/doctor/doctor/'.$user->doctor->sign); @endphp
       @else
-        @php $imgPath = asset('storage/patient/profile/'.$user->profile->profile_pic); @endphp
+        @php $imgPath = asset('storage/patient/doctor/'.$user->doctor->profile_pic); @endphp
       @endif
-      <img class="direct-chat-img" src="{{ $imgPath}}" alt=""> &nbsp;&nbsp;&nbsp;
+      <img class="direct-chat-img" src="{{ $profilePic }}" alt=""> &nbsp;&nbsp;&nbsp;
       <input id = "profile_pic" type="file" class = "lock_items" name = "profile_pic">
     </div>
   </div>
   <div class = "col-md-6">
     <label for="email">Signature</label>
     <div class="direct-chat-msg">
-      <img class="direct-chat-img" src="{{ asset('storage/doctor/profile/'.$user->profile->sign )}}" alt=""> &nbsp;&nbsp;&nbsp;
+      <img class="direct-chat-img" src="{{ $sign }}" alt=""> &nbsp;&nbsp;&nbsp;
       <input type="file"  id="sign"  class ="lock_items" name = "sign">
     </div>
   </div>
@@ -38,13 +39,13 @@
     <div class = "col-md-6">
       <div class="form-group">
         <label for="Name">specialization</label>
-        <input id="specialization" type="text" class="form-control" name="specialization" value="{{ $user->profile->specialization }}">
+        <input id="specialization" type="text" class="form-control" name="specialization" value="{{ $user->doctor->specialization }}">
       </div>
     </div>
     <div class = "col-md-6">
       <div class="form-group">
         <label for="email">About</label>
-        <input id="about" type="text-area" class="form-control" name="about" value="{{ $user->profile->about }}">
+        <input id="about" type="text-area" class="form-control" name="about" value="{{ $user->doctor->about }}">
       </div>
   </div>
 </div>

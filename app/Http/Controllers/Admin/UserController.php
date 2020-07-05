@@ -11,7 +11,7 @@ use File;
 use Image;
 use App\User;
 use App\Role;
-use App\Profile;
+use App\Doctor;
 use App\Department;
 use Session;
 use Illuminate\Support\Facades\Validator;
@@ -29,7 +29,7 @@ class UserController extends Controller
     public function index()
     {
 
-      return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
+      if (!Auth::user()->hasRole(['admin'])) return  abort(404) ;
         $users = $this->allUsersExceptAdmin();
         return view('layouts.admin.user.index')
             ->with('users', $users);
@@ -37,7 +37,7 @@ class UserController extends Controller
 
     public function create()
     {
-        return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
+      if (!Auth::user()->hasRole(['admin'])) return  abort(404) ;
         $roles = Role::where('name', '<>', 'admin')->get();
         $departments = Department::all();
         return view('layouts.admin.user.create')->with(['roles' => $roles, 'departments' => $departments]);
@@ -46,7 +46,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
+      if (!Auth::user()->hasRole(['admin'])) return  abort(404) ;
+
         $user = new User();
         $this->validate($request,[
           'name' => 'required',
@@ -62,14 +63,12 @@ class UserController extends Controller
         $department = Department::find($request->department);
         if ($user->save())
         {
-            $profile = new Profile;
-            $profile->user_id = $user->id;
-            $profile->save();
-            $user->roles()
-                ->attach($role);
+            $user->roles()->attach($role);
+            $doctor = new Doctor;
+            $doctor->user_id = $user->id;
             $user->departments()
                     ->attach($department);
-            $user->profile()->save($profile);
+            $user->doctor()->save($doctor);
             $users = $this->allUsersExceptAdmin();
             Toastr::success('User created Successfully :', 'Success');
             return view('layouts.admin.user.index')
@@ -89,7 +88,7 @@ class UserController extends Controller
 
     public function edit(user $user)
     {
-        return (!Auth::user()->hasRole(['admin'])) ? abort(404) : '';
+        if (!Auth::user()->hasRole(['admin']))  return abort(404);
         if (Gate::denies('edit-users')) return redirect(route('admin.users.index'));
         $roles = Role::where('name', '<>', 'admin')->get();
         return view('layouts.admin.user.edit')
@@ -100,23 +99,24 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
       // dd($request->post());
-      if (!Auth::user()->hasAnyRole(['admin'])){
+      if (!Auth::user()->hasAnyRole(['admin','doctor'])){
         Toastr::error('Do not have access rights!', 'Error');
         return redirect()->back();
       }
+      // dd($request->file());
       $this->validate($request,[
           'name' => 'required',
-          'profile_pic' => 'image|mimes:jpeg,bmp,png,jpg|max:2048',
+          'profile->pic' => 'image|mimes:jpeg,bmp,png,jpg|max:2048',
           'sign' => 'image|mimes:jpeg,bmp,png,jpg|max:2048',
       ]);
       if($user = User::find($id)){
             $user->name = $request->name;
-            $profile = Profile::where('user_id', $user->id)->first();
-            if ($request->hasFile('profile_pic')) $profile->profile_pic = $this->imageUpload($request->file('profile_pic'), $user);
-            if ($request->hasFile('sign')) $profile->sign = $this->imageUpload($request->file('sign'), $user);
-            $profile->specialization = $request->specialization;
-            $profile->about = $request->about;
-            if($user->save() && $profile->save()){
+            $doctor = Doctor::where('user_id', $user->id)->first();
+            if ($request->hasFile('profile_pic')) $doctor->profile_pic = $this->imageUpload($request->file('profile_pic'), $user);
+            if ($request->hasFile('sign')) $doctor->sign = $this->imageUpload($request->file('sign'), $user);
+            $doctor->specialization = $request->specialization;
+            $doctor->about = $request->about;
+            if($user->save() && $doctor->save()){
               $users = $this->allUsersExceptAdmin();
               Toastr::success('User updated Successfully :', 'Success');
               return view('layouts.admin.user.index')
@@ -140,12 +140,12 @@ class UserController extends Controller
       }
         $imgRoot = $this->userRoleName($user);
 
-        (Storage::disk('public')->exists($imgRoot.'/profile' . $user->profile->profile_pic) && $user->profile->profile_pic != 'doctor.png' ) ?  Storage::disk('public')->delete($imgRoot . $user->profile->profile_pic):'';
+        (Storage::disk('public')->exists($imgRoot.'/Doctor' . $user->Doctor->Doctor_pic) && $user->Doctor->Doctor_pic != 'doctor.png' ) ?  Storage::disk('public')->delete($imgRoot . $user->Doctor->Doctor_pic):'';
 
-        (Storage::disk('public')->exists($imgRoot.'/profile' . $user->profile->sign) && $user->profile->sign!= 'sign.png' ) ?  Storage::disk('public')->delete($imgRoot . $user->profile->sign):'';
-          $docId = $user->profile->id;
+        (Storage::disk('public')->exists($imgRoot.'/Doctor' . $user->Doctor->sign) && $user->Doctor->sign!= 'sign.png' ) ?  Storage::disk('public')->delete($imgRoot . $user->Doctor->sign):'';
+          $docId = $user->Doctor->id;
           echo "done";
-          if($user->roles()->detach() && $user->profile()->delete() &&  $user->delete()){
+          if($user->roles()->detach() && $user->Doctor()->delete() &&  $user->delete()){
             echo "deleted";
             Toastr::success('User Successfully Deleted !', 'Success');
           }
@@ -169,7 +169,7 @@ class UserController extends Controller
             }
             $customImage = Image::make($img)->resize(150, 150)
                 ->save($imgName, 90);
-            Storage::disk('public')->put($folder.'/profile/' . $imgName, $customImage);
+            Storage::disk('public')->put($folder.'/doctor/' . $imgName, $customImage);
         }
         else
         {

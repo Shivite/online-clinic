@@ -28,7 +28,16 @@
                             @endif
                         @else
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('register') }}">{{ Auth::user()->name}}</a>
+
+                          @if(Auth::user()->hasRole('admin'))
+                            @php $imgPath = 'dashboard'; @endphp
+                          @elseif(Auth::user()->hasRole('doctor'))
+                            @php $imgPath = 'doctor/profile' ; @endphp
+                            @else
+                            @php $imgPath = 'patient/details' ; @endphp
+                          @endif
+
+                            <a class="nav-link" href="{{ route($imgPath) }}">{{ Auth::user()->name}}</a>
                         </li>
                         <li class="nav-item">
                           <a class="dropdown-item" href="{{ route('logout') }}"

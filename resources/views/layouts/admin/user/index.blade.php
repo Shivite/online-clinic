@@ -32,10 +32,10 @@
 </div>
 @endsection
 @section('pagespecificscripts')
-<script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}" ></script>
-<script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}" ></script>
-<script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}" ></script>
-<script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}" ></script>
+<script src="{{ asset('js/required/jquery.dataTables.min.js') }}" ></script>
+<script src="{{ asset('js/required/dataTables.bootstrap4.min.js') }}" ></script>
+<script src="{{ asset('js/required/dataTables.responsive.min.js') }}" ></script>
+<script src="{{ asset('js/required/responsive.bootstrap4.min.js') }}" ></script>
 <script src="{{ asset('js/custom.js') }}" ></script>
 <!-- <script src="{{ asset('js/toastr.min.js') }}" ></script> -->
 @stop

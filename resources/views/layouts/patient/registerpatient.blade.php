@@ -331,7 +331,9 @@
 <script src="{{ asset('js/required/daterangepicker.js') }}" ></script>
 <script src="{{ asset('js/required/tempusdominus-bootstrap-4.min.js')}}"></script>
 <script src="{{ asset('js/forms/custom-country-selection.js') }}" ></script>
-<script src="{{ asset('plugins/jquery-validation/jquery.validate.min.js') }}"></script>
+<!-- changed for admin -->
+<script src="{{ asset('js/required/jquery.validate.min.js') }}" ></script>
+<!-- <script src="{{ asset('js/required/additional-methods.min.js') }}" defer></script> -->
 <script src="{{ asset('js/forms/patient-form-validation.js') }}" ></script>
 <script src="{{ asset('js/required/bs-custom-file-input.min.js') }}" defer></script>
 

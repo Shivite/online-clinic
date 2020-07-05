@@ -50,12 +50,15 @@ class User extends Authenticatable implements MustVerifyEmail
       return $this->belongsToMany('App\Role');
     }
 
-    public function profile(){
-      return $this->hasOne('App\Doctor');
-    }
+
     public function departments(){
       return $this->belongsToMany('App\Department');
     }
+
+    public function doctor(){
+      return $this->hasOne('App\Doctor');
+    }
+
     public function patient(){
       return $this->hasOne('App\Patient');
     }
@@ -63,6 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function payments(){
       return $this->belongsToMany('App\Payment');
     }
+
 
     /**
      * Send the password reset notification.

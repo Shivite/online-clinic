@@ -26,14 +26,8 @@ Route::post('/registration/payment/Complete', 'Patient\PatientController@razorPa
 Route::get('/registration/complete', 'Patient\PatientController@registerComplete')->name('payment.success');
 Route::get('/registration/failure', 'Patient\PatientController@registerFailure')->name('payment.fail');
 
-
-
-
-
 Route::post('/patient/remove-image', 'Patient\PatientController@removeImage');
 Auth::routes(['verify' => true ]);
-Route::get('patient/dashboard', 'Patient\PatientController@index')->name('patient.dashboard')->middleware('verified');
-// Route::resource('admin', 'Admin\AdminController');
 
 Route::get('admin/dashboard', 'Admin\AdminController@index')->name('dashboard')->middleware('verified');
 Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
@@ -44,4 +38,9 @@ Route::get('doctor/profile', 'Doctor\DoctorController@profile')->name('doctor.pr
 Route::namespace('Doctor')->group(function(){
   Route::resource('/doctor', 'DoctorController');
 
+});
+
+Route::get('paitent/details', 'Patient\PatientDashboardController@details')->name('patient.details')->middleware('verified');
+Route::namespace('Patient')->group(function(){
+  Route::resource('/patient', 'PatientController');
 });

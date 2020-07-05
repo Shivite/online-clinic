@@ -6,7 +6,7 @@
 <title>@yield('title'){{ config('app.name', ' : | P R Medication') }}</title>
 <script src="{{ asset('js/app.js') }}" ></script>
 <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-<link href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+<link href="{{ asset('css/required/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 <link href="{{ asset('css/required/icheck-bootstrap.min.css') }}" rel="stylesheet">
 <link href="{{ asset('css/required/admin.min.css') }}" rel="stylesheet">
