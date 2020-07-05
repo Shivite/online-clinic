@@ -75,7 +75,7 @@
         @endif
       </p>
       <p class="mb-0">
-        <a class="btn btn-link" href="{{ route('register') }}">
+        <a class="btn btn-link" href="{{ route('registerpatient') }}">
             {{ __('New Members') }}
         </a>
       </p>

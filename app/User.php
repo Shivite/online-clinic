@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use App\Notifications\CustomResetPasswordNotification;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -51,12 +51,28 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     public function profile(){
-      return $this->hasOne('App\Profile');
+      return $this->hasOne('App\Doctor');
     }
     public function departments(){
       return $this->belongsToMany('App\Department');
     }
+    public function patient(){
+      return $this->hasOne('App\Patient');
+    }
 
+    public function payments(){
+      return $this->belongsToMany('App\Payment');
+    }
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new CustomResetPasswordNotification($token));
+    }
 
 }

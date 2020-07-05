@@ -20,7 +20,8 @@
                 <div class="row">
                   <div class="col-sm-2">
                     <div class="form-group">
-                      <label>Title</label>
+                      <label>Title
+                      </label>
                       <select id="title" class="form-control @error('title') is-invalid @enderror" name = "title"  >
                         <option value="-1">Select Country</option>
 

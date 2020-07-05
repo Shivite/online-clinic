@@ -74,9 +74,7 @@ console.log(date);
    $('.submit-appointment').click(function(e){
      e.preventDefault();
      $(this).append(
-       '<span class=" spiner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> '
-     );
-     // $('.spiner').addClass('d-none')
+       '<span class=" spiner spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>' );
      $.ajax({
         type:'POST',
         url:'/registration/patient/appointment',
@@ -88,10 +86,8 @@ console.log(date);
 
        success: function(data)
        {
-         console.log(data);
          if(data.success)
          {
-            $('.spiner').addClass('d-none');
                  console.log(data.values);
                   var options = {
                    "key": data.values.razorpayId, // Enter the Key ID generated from the Dashboard
@@ -102,6 +98,8 @@ console.log(date);
                    "image": "{{asset('images/logo.png')}}",
                    "order_id": data.values.orderId, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
                    "handler": function (response){
+                     console.log(response);
+                     console.log(JSON.stringify(response));
                      alert(response.razorpay_payment_id);
                        $.ajax({
                           type:'POST',
@@ -112,9 +110,17 @@ console.log(date);
                               'rzp_paymentid': response.razorpay_payment_id,
                               'rzp_orderid': response.razorpay_order_id,
                               'rzp_signature': response.razorpay_signature,
+                               "amount": data.values.amount,
+                               "description": data.values.discription,
+                               "order_id": data.values.orderId,
+                               "contactNumber":data.values.contactNumber,
+                               "email":data.values.email,
                           },
                          success: function(data)
                          {
+                            $('.spiner').addClass('d-none');
+                            console.log("data.url");
+
                             window.location = data.url;
                          },
                          error: function(data)
