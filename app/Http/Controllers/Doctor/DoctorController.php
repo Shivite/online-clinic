@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Validator;
 use App\User;
-use App\Profile;
+use App\Doctor;
 use File;
 use Image;
 use Illuminate\Support\Facades\Storage;
@@ -56,12 +56,12 @@ class DoctorController extends Controller
 
       if($user = User::find($id)){
             $user->name = $request->name;
-            $profile = Profile::where('user_id', $user->id)->first();
-            if ($request->hasFile('profile_pic')) $profile->profile_pic = $this->imageUpload($request->file('profile_pic'), $user);
-            if ($request->hasFile('sign')) $profile->sign = $this->imageUpload($request->file('sign'), $user);
-            $profile->specialization = $request->specialization;
-            $profile->about = $request->about;
-            if($user->save() && $profile->save()){
+            $doctor = Doctor::where('user_id', $user->id)->first();
+            if ($request->hasFile('profile_pic')) $doctor->profile_pic = $this->imageUpload($request->file('profile_pic'), $user);
+            if ($request->hasFile('sign')) $doctor->sign = $this->imageUpload($request->file('sign'), $user);
+            $doctor->specialization = $request->specialization;
+            $doctor->about = $request->about;
+            if($user->save() && $doctor->save()){
               Toastr::success('User updated Successfully :', 'Success');
               return view('layouts.admin.doctor.profile')->with('user', $user);            }
         }
@@ -90,20 +90,20 @@ class DoctorController extends Controller
     }
 
     //custom function
-    public function imageUpload($img)
-    {
+    public function imageUpload($img, $user )    {
+        $folder = $this->userRoleName($user);
         if (isset($img))
         {
             $imgName = uniqid() . '.' . $img->getClientOriginalExtension();
             if (!Storage::disk('public')
-                ->exists('doctor/profile'))
+                ->exists($folder))
             {
                 Storage::disk('public')
-                    ->makeDirectory('doctor/profile');
+                    ->makeDirectory($folder);
             }
             $customImage = Image::make($img)->resize(150, 150)
                 ->save($imgName, 90);
-            Storage::disk('public')->put('doctor/profile/' . $imgName, $customImage);
+            Storage::disk('public')->put($folder.'/profile/'. $imgName, $customImage);
         }
         else
         {
@@ -112,5 +112,13 @@ class DoctorController extends Controller
         return $imgName;
     }
 
+
+        public function userRoleName($user){
+          if ($user->hasRole('admin')) $roleName = 'admin';
+          if ($user->hasRole('doctor')) $roleName = 'doctor';
+          if ($user->hasRole('staff')) $roleName = 'staff';
+          if ($user->hasRole('patient')) $roleName = 'patient';
+          return $roleName;
+        }
 
 }

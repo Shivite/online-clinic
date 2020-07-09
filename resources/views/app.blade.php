@@ -5,6 +5,10 @@
 
     </head>
     <body  class="{{  Request::path() == 'password/reset' || Request::path() == 'password/reset' || Request::path() == 'registration/patient/reports'  || Request::path() == 'registerpatient'  || Request::path() == 'registration/create-step2'  || Request::path() == 'login' || Request::path() == 'register' || Request::path() == '/' ? 'background-image' : '' }}" >
+      <div id="overlay">
+        <div id="progstat"></div>
+        <div id="progress"></div>
+      </div>
       <div class="wrapper">
         <!-- @include('layouts.partials.alert') -->
         @yield('content')

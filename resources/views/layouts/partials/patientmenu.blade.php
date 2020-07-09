@@ -43,7 +43,7 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a href="{{ route('patient.details')}}" class="nav-link">
+          <a href="{{ route('patient.profile')}}" class="nav-link">
             <i class="nav-icon fas fa-user"></i>
             <p>
               Patient Details

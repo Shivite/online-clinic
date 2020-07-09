@@ -26,19 +26,20 @@ class UserController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index() //list all patient and doctor
     {
 
-      if (!Auth::user()->hasRole(['admin'])) return  abort(404) ;
-        $users = $this->allUsersExceptAdmin();
+      if (!Auth::user()->hasAnyRole(['admin','staff'])) return  abort(404) ;
+        $users = $this->allDoctors();
         return view('layouts.admin.user.index')
             ->with('users', $users);
     }
 
     public function create()
     {
+      // echo "here"; die;
       if (!Auth::user()->hasRole(['admin'])) return  abort(404) ;
-        $roles = Role::where('name', '<>', 'admin')->get();
+        $roles = Role::where('name','doctor')->get();
         $departments = Department::all();
         return view('layouts.admin.user.create')->with(['roles' => $roles, 'departments' => $departments]);
 
@@ -63,13 +64,15 @@ class UserController extends Controller
         $department = Department::find($request->department);
         if ($user->save())
         {
+            // $user = User::find(6);
             $user->roles()->attach($role);
-            $doctor = new Doctor;
+            if($role->name == 'doctor')
+              $doctor = new Doctor;
             $doctor->user_id = $user->id;
             $user->departments()
                     ->attach($department);
             $user->doctor()->save($doctor);
-            $users = $this->allUsersExceptAdmin();
+            $users = $this->allDoctors();
             Toastr::success('User created Successfully :', 'Success');
             return view('layouts.admin.user.index')
                 ->with('users', $users);
@@ -117,7 +120,7 @@ class UserController extends Controller
             $doctor->specialization = $request->specialization;
             $doctor->about = $request->about;
             if($user->save() && $doctor->save()){
-              $users = $this->allUsersExceptAdmin();
+              $users = $this->allDoctors();
               Toastr::success('User updated Successfully :', 'Success');
               return view('layouts.admin.user.index')
                   ->with('users', $users);
@@ -138,20 +141,37 @@ class UserController extends Controller
         Toastr::error('Do not have access rights!', 'Error');
         return redirect()->back();
       }
+
         $imgRoot = $this->userRoleName($user);
-
-        (Storage::disk('public')->exists($imgRoot.'/Doctor' . $user->Doctor->Doctor_pic) && $user->Doctor->Doctor_pic != 'doctor.png' ) ?  Storage::disk('public')->delete($imgRoot . $user->Doctor->Doctor_pic):'';
-
-        (Storage::disk('public')->exists($imgRoot.'/Doctor' . $user->Doctor->sign) && $user->Doctor->sign!= 'sign.png' ) ?  Storage::disk('public')->delete($imgRoot . $user->Doctor->sign):'';
+        if($imgRoot == 'doctor'){
+          (Storage::disk('public')->exists($imgRoot.'/doctor' . $user->doctor->profile_pic) && $user->doctor->poctor_pic != 'doctor.png' ) ?  Storage::disk('doctor')->delete($imgRoot . $user->Doctor->Doctor_pic):'';
+          (Storage::disk('public')->exists($imgRoot.'/doctor' . $user->doctor->sign) && $user->doctor->sign!= 'sign.png' ) ?  Storage::disk('public')->delete($imgRoot . $user->doctor->sign):'';
           $docId = $user->Doctor->id;
-          echo "done";
-          if($user->roles()->detach() && $user->Doctor()->delete() &&  $user->delete()){
-            echo "deleted";
-            Toastr::success('User Successfully Deleted !', 'Success');
+          if($user->Doctor()->delete() && $user->roles()->detach() &&   $user->delete())
+            Toastr::success('Doctor Successfully Deleted !', 'Success');
+            else
+                Toastr::error('Something went wrong please try after some time!', 'Error');
+        }
+        // dd($user->patient);
+        if($imgRoot == 'patient'){
+          //folder wise deletion
+          if(Storage::disk('patient')->exists($user->email)){
+              Storage::disk('patient')->deleteDirectory($user->email);
           }
+          //photo delete
+          if(Storage::disk('patient')->exists('profile/'. $user->patient->photo) &&         $user->patient->photo != 'patient.png' )
+              Storage::disk('patient')->delete( 'profile/'.$user->patient->photo);
+          //profile delete
+          if(Storage::disk('patient')->exists('profile/'. $user->patient->proof) &&         $user->patient->proof != 'proof.png' )
+              Storage::disk('patient')->delete( 'profile/'.$user->patient->proof);
 
-          else
-              Toastr::error('Something went wrong please try after some time!', 'Error');
+
+        if($user->patient->delete() &&   $user->roles()->detach() &&  $user->delete())
+            Toastr::success('Patient Successfully Deleted !', 'Success');
+        else
+            Toastr::error('Something went wrong please try after some time!', 'Error');
+        }
+
           return redirect()->back();
     }
     //custom function
@@ -169,7 +189,7 @@ class UserController extends Controller
             }
             $customImage = Image::make($img)->resize(150, 150)
                 ->save($imgName, 90);
-            Storage::disk('public')->put($folder.'/doctor/' . $imgName, $customImage);
+            Storage::disk('public')->put($folder.'/profile/'. $imgName, $customImage);
         }
         else
         {
@@ -178,14 +198,14 @@ class UserController extends Controller
         return $imgName;
     }
 
-    public function allUsersExceptAdmin()
-    {
-        return $users = User::whereHas('roles', function ($q)
-        {
-            $q->where('name', '<>', 'admin');
-        })
-            ->get();
-    }
+      public function allDoctors()
+      {
+          return $users = User::whereHas('roles', function ($q)
+          {
+              $q->where('name',  'doctor');
+          })
+              ->get();
+      }
 
     public function userRoleName($user){
       if ($user->hasRole('admin')) $roleName = 'admin';

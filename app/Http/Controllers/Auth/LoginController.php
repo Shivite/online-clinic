@@ -31,10 +31,10 @@ class LoginController extends Controller
 
     protected function redirectTo()
      {
-        if(Auth::user()->hasrole('admin'))  return '/admin/dashboard';
+        if(Auth::user()->hasrole('admin'))  return '/admin/users';
         if(Auth::user()->hasrole('doctor'))  return '/doctor/profile';
-        if(Auth::user()->hasrole('staff'))  return '/staff/dashboard';
-        if(Auth::user()->hasrole('patient'))  return '/patient/details';
+        if(Auth::user()->hasrole('staff'))  return '/admin/users';
+        if(Auth::user()->hasrole('patient'))  return 'patient/profile';
      }
     /**
      * Create a new controller instance.

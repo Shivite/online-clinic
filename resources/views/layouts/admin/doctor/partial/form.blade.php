@@ -4,8 +4,8 @@
     <label for="email">Profile Picture</label>
     <div class="direct-chat-msg">
       @if($user->hasRole('doctor'))
-      @php $profilePic = asset('storage/doctor/doctor/'.$user->doctor->profile_pic); @endphp
-      @php $sign = asset('storage/doctor/doctor/'.$user->doctor->sign); @endphp
+      @php $profilePic = asset('storage/doctor/profile/'.$user->doctor->profile_pic); @endphp
+      @php $sign = asset('storage/doctor/profile/'.$user->doctor->sign); @endphp
       @else
         @php $imgPath = asset('storage/patient/doctor/'.$user->doctor->profile_pic); @endphp
       @endif

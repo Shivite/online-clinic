@@ -1,7 +1,7 @@
 @extends('app')
 @section('title','Doctor Profile')
 @section('content')
-    @include('layouts.partials.adminmenu')
+    @include('layouts.partials.doctormenu')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <div class="content-wrapper">
     <section class="content-header">
@@ -59,8 +59,8 @@
 
 @endsection
 @section('pagespecificscripts')
-<script src="{{ asset('plugins/jquery-validation/jquery.validate.min.js') }}" defer></script>
-<script src="{{ asset('/plugins/jquery-validation/additional-methods.min.js') }}" defer></script>
+<script src="{{ asset('js/required/jquery.validate.min.js') }}" defer></script>
+<script src="{{ asset('js/required/additional-methods.min.js') }}" defer></script>
 <script src="{{ asset('js/forms/custom-validation.js') }}" defer></script>
 
 <script src="../.."></script>

@@ -29,15 +29,21 @@
                         @else
                         <li class="nav-item">
 
-                          @if(Auth::user()->hasRole('admin'))
-                            @php $imgPath = 'dashboard'; @endphp
+                          @if(Auth::user()->hasAnyRole(['admin','staff'])  )
+
+                              @php $path = 'admin/users'; @endphp
+
                           @elseif(Auth::user()->hasRole('doctor'))
-                            @php $imgPath = 'doctor/profile' ; @endphp
-                            @else
-                            @php $imgPath = 'patient/details' ; @endphp
+
+                              @php $path = 'doctor/profile' ; @endphp
+
+                          @else
+
+                              @php $path = 'patient/profile' ; @endphp
+
                           @endif
 
-                            <a class="nav-link" href="{{ route($imgPath) }}">{{ Auth::user()->name}}</a>
+                            <a class="nav-link" href="{{ $path }}">{{ Auth::user()->name}}</a>
                         </li>
                         <li class="nav-item">
                           <a class="dropdown-item" href="{{ route('logout') }}"

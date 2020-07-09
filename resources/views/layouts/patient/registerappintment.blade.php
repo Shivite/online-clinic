@@ -53,7 +53,7 @@
 <script src="{{ asset('js/required/daterangepicker.js') }}" ></script>
 <script src="{{ asset('js/required/tempusdominus-bootstrap-4.min.js')}}"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<!-- <script src="{{ asset('js/required/payment.js')}}"></script> -->
+<script src="{{ asset('js/required/payment.js')}}"></script>
 
 <script>
   $(function () {

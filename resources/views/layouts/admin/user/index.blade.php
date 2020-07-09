@@ -10,12 +10,13 @@
                <div class="card-header ui-sortable-handle" style="cursor: move;">
                   <h3 class="card-title">
                      <i class="fas fa-user mr-1"></i>
-                     <b>Users</b>
+                     <b>Doctors</b>
                   </h3>
                   <div class="card-tools">
                      <ul class="nav nav-pills ml-auto">
                         <li class="nav-item">
-                           <a href="{{route('admin.users.create')}}" class="btn-border  btn-sm" href="">Add User</a>
+
+                           <a href="{{route('admin.users.create')}}" class="btn-border  btn-sm" href="">Add Doctor</a>
                         </li>
                      </ul>
                   </div>
@@ -36,6 +37,6 @@
 <script src="{{ asset('js/required/dataTables.bootstrap4.min.js') }}" ></script>
 <script src="{{ asset('js/required/dataTables.responsive.min.js') }}" ></script>
 <script src="{{ asset('js/required/responsive.bootstrap4.min.js') }}" ></script>
-<script src="{{ asset('js/custom.js') }}" ></script>
+<!-- <script src="{{ asset('js/custom.js') }}" ></script> -->
 <!-- <script src="{{ asset('js/toastr.min.js') }}" ></script> -->
 @stop

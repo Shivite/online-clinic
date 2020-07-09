@@ -17,9 +17,9 @@ class CreatePaymentUserTable extends Migration
             $table->bigIncrements('id');$table->bigInteger('user_id')->unsigned();
             $table->bigInteger('payment_id')->unsigned();
             $table->foreign('user_id')
-                    ->references('id')->on('users');
+                    ->references('id')->on('users')->onDelete('cascade');
                     $table->foreign('payment_id')
-                            ->references('id')->on('payments');
+                            ->references('id')->on('payments')->onDelete('cascade');;
             $table->timestamps();
         });
     }

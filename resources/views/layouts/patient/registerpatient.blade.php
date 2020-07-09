@@ -23,8 +23,6 @@
                       <label>Title
                       </label>
                       <select id="title" class="form-control @error('title') is-invalid @enderror" name = "title"  >
-                        <option value="-1">Select Country</option>
-
                         <option {{ (isset($patient->title) && $patient->title == 'Ms') ? 'selected': '' }} value = "mr">Mr.</option>
                         <option {{ (isset($patient->title) && $patient->title == 'Ms') ? 'selected': '' }} value = "ms">Ms.</option>
                         <option {{ (isset($patient->title) && $patient->title == 'Ms') ? 'selected': '' }} value = "mrs">Mrs.</option>
@@ -81,7 +79,7 @@
                   <div class="col-sm-6">
                     <div class="form-group">
                       <label>Alternative Number</label>
-                      <input id="altnumber" type="number" class="form-control @error('altnumber') is-invalid @enderror" name="altnumber" value="{{(isset($patient->altnumber)) ? $patient->altnumber: '' }}" placeholder="Number"   maxlength="10" size="10" required>
+                      <input id="altnumber" type="number" class="form-control @error('altnumber') is-invalid @enderror" name="altnumber" value="{{(isset($patient->alt_number)) ? $patient->alt_number: '' }}" placeholder="Number"   maxlength="10" size="10" required>
                       @error('altnumber')
                           <span class="invalid-feedback custom-err" role="alert">
                               <strong>{{ $message }}</strong>
@@ -181,8 +179,8 @@
                   <div class="form-group">
                     <label>Gender</label>
                     <select id="gender" class="form-control @error('gender') is-invalid @enderror" name = "gender"  required>
-                      <option {{ (isset($patient->gender) && $patient->gener == 'male') ? 'selected': '' }} value = "mr">Male</option>
-                      <option {{ (isset($patient->gender) && $patient->title == 'female') ? 'selected': '' }} value = "mr">Female</option>
+                      <option {{ (isset($patient->gender) && $patient->gender == 'male') ? 'selected': '' }} value = "mr">Male</option>
+                      <option {{ (isset($patient->gender) && $patient->gender == 'female') ? 'selected': '' }} value = "mr">Female</option>
                     </select>
                     @error('gender')
                         <span class="invalid-feedback custom-err" role="alert">

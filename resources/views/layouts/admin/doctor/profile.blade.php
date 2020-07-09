@@ -23,24 +23,24 @@
               <div class="card-body box-profile">
                 <div class="text-center">
                   @if($user->hasRole('doctor'))
-                    @php $imgPath = asset('storage/doctor/profile/'.$user->profile->profile_pic); @endphp
+                  @php $profilePic = asset('storage/doctor/profile/'.$user->doctor->profile_pic); @endphp
+                  @php $sign = asset('storage/doctor/profile/'.$user->doctor->sign); @endphp
                   @else
-                    @php $imgPath = asset('storage/patient/profile/'.$user->profile->profile_pic); @endphp
+                    @php $imgPath = asset('storage/patient/profile/'.$user->doctor->profile_pic); @endphp
                   @endif
-                  <img class="profile-user-img img-fluid img-circle" src="{{ $imgPath}}" alt="doctor picture">
+                  <img class="profile-user-img img-fluid img-circle" src="{{ $profilePic }}" alt="doctor picture">
                 </div>
 
                 <h3 class="profile-username text-center">{{ ucwords($user->name) }}</h3>
 
-                <p class="text-muted text-center">{{ ucwords($user->profile->specialization) }}</p>
+                <p class="text-muted text-center">{{ ucwords($user->doctor->specialization) }}</p>
 
                 <ul class="list-group list-group-unbordered mb-3">
                   <li class="list-group-item">
                     <b>Patients</b> <a class="float-right"></a>
                   </li>
                   <li class="list-group-item">
-                    <b>Pending Appointment</b> <a class="float-right"></a>
-                  </li>
+                    <b>Pending Appointment</b> <a class="float-right"><profile            </li>
                 </ul>
                 <a href="{{ route('doctor.edit', $user->id)}}" class="btn btn-primary btn-block"><b>Edit Details</b></a>
               </div>
@@ -58,7 +58,7 @@
                 <strong><i class="fas fa-book mr-1"></i> About Doctor</strong>
 
                 <p class="text-muted">
-                  {{ $user->profile->about}}
+                  {{ $user->doctor->about}}
                 </p>
 
                 <hr>

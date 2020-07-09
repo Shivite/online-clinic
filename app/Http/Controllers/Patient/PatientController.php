@@ -10,6 +10,7 @@ use App\Report;
 use App\Payment;
 use File;
 use Image;
+use Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Razorpay\Api\Api;
@@ -21,6 +22,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\RegistersUsers;
 class PatientController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware('auth', ['only' => 'profie']);
+  }
+
     private $razorpayId= 'rzp_test_1z4vEE23O5vJ6R';
     private $razorpayKey= 'QQOe1YLieKNYPRwK4lL6x1fd' ;
 
@@ -39,13 +45,14 @@ class PatientController extends Controller
             "title" => "required",
             "name" => "required",
             "number" => "required|min:10|numeric",
-            "alt_number" => "min:10|numeric",
+            "altnumber" => "min:10|numeric",
             "password" => "required",
             "email" => "required|unique:users",
             "address" => "required",
-            "pin" =>  "required|min:10|numeric",
+            "pin" =>  "required|numeric",
             "legalgaurdian" =>  "required",
             "country" =>  "required",
+            "state" =>  "required",
             "dob" =>  "required",
             "docname" =>  "",
             "age" =>  "required",
@@ -298,11 +305,13 @@ class PatientController extends Controller
       $newPatient->title = $patient->title;
       $newPatient->name  =      $patient->name     ;
       $newPatient->number   =     $patient->number     ;
+      $newPatient->alt_number   =     $patient->altnumber     ;
       $newPatient->email    =     $patient->email     ;
       $newPatient->address    =     $patient->address     ;
       $newPatient->pin    =     $patient->pin     ;
       $newPatient->legalgaurdian    =     $patient->legalgaurdian     ;
       $newPatient->country    =     $patient->country     ;
+      $newPatient->state    =     $patient->state     ;
       $newPatient->dob    =     $dob;
       $newPatient->docname    =     $patient->docname     ;
       $newPatient->age    =     $patient->age     ;
@@ -353,4 +362,16 @@ class PatientController extends Controller
       public function registerFailure( Request $request){
         return view('layouts.patient.paymentfailure');
       }
+
+
+      public function profile()
+      {
+
+        if(!Auth::user()->hasRole('patient')) return abort(404);
+        $patient = Auth::user()->patient;
+        return view('layouts.patient.dashboard.profile')->with('patient', $patient);
+      }
+
+
+
 }

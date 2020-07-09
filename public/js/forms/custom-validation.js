@@ -2,13 +2,13 @@
 
 $('.btn-delete').click(function(e){
        e.preventDefault();
-       
+
        // $(".lock_inputs :input").prop("disabled", false);
        // $(".lock_items").css("display", 'block');
        // $(".unlock_inputs").css("display", 'none');
        // $('.send_btn').attr('disabled', 'disabled');
    });
-  $('.send_btn').attr('disabled', 'disabled');
+  // $('.send_btn').attr('disabled', 'disabled');
   // $(".lock_inputs :input").prop("disabled", true);
   // $(".lock_items").css("display", 'none');
   $('.unlock_inputs').click(function(e){
@@ -16,7 +16,7 @@ $('.btn-delete').click(function(e){
          $(".lock_inputs :input").prop("disabled", false);
          $(".lock_items").css("display", 'block');
          $(".unlock_inputs").css("display", 'none');
-         $('.send_btn').attr('disabled', 'disabled');
+         // $('.send_btn').attr('disabled', 'disabled');
      });
   $('#storeUserForm').validate({
         rules: {
@@ -81,7 +81,7 @@ $('.btn-delete').click(function(e){
     if($('#storeUserForm').valid()){
       $('.send_btn').prop('disabled', false);
     }else{
-      $('.send_btn').prop('disabled', 'disabled');
+      // $('.send_btn').prop('disabled', 'disabled');
     }
   });
 //remove current record

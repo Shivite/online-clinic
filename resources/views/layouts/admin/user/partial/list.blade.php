@@ -18,20 +18,16 @@
           <td> {{ $user->email }} </td>
           <td> {{ ucwords(implode(', ', $user->roles()->get()->pluck('name')->toArray())) }} </td>
           <td>
-
-              @can('edit-users')
+            @if(Auth::user()->hasRole(['admin']))
                 <a href = "{{ route('admin.users.edit', $user->id)}}" type="button" class="btn btn-info float-left"><i class="fas fa-edit"></i>  </a> &nbsp;
-              @endcan
 
               <form action = "{{ route('admin.users.destroy', $user) }}" method="POST" class=" float-left">
                 @csrf
                 {{ method_field("DELETE")}}
-                @can('delete-users')
                 &nbsp
                   <button  type = "submit" class="btn btn-danger"><i class="fas fa-trash"></i></button></a>
-                @endcan
               </form>
-
+              @endif
           </td>
         </tr>
       @endforeach
