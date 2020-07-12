@@ -27,9 +27,9 @@ Route::get('/registration/reports', 'Patient\PatientController@registerReports')
 Route::get('/registration/appointment', 'Patient\PatientController@registerAppointment')->name('patient.appintment');
 /* tesing route appointment */
 
-Route::get('/registration/appointment/test', function(){
-        return view('layouts.patient.registerappintmentTest');;
-});
+// Route::get('/registration/appointment/test', function(){
+//         return view('layouts.patient.registerappintmentTest');;
+// });
 
 Route::post('/registration/patient/timeslots', 'Patient\PatientController@postRegisterGetAppointmentTimeSlots')->name('register.appointment.timeslots');
 

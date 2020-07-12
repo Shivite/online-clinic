@@ -19,27 +19,33 @@ use App\Role;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use Brian2694\Toastr\Facades\Toastr;  
 use Illuminate\Foundation\Auth\RegistersUsers;
 class PatientController extends Controller
 {
-  public function __construct()  {
-    $this->middleware('auth', ['only' => 'profie']);
+    public function __construct()  {
+      $this->middleware('auth', ['only' => 'profie']);
     } 
 
-        private $razorpayId= 'rzp_test_1z4vEE23O5vJ6R';
+    private $razorpayId= 'rzp_test_1z4vEE23O5vJ6R';
     private $razorpayKey= 'QQOe1YLieKNYPRwK4lL6x1fd' ;
 
     /*get available time slots starts */
 
     public function postRegisterGetAppointmentTimeSlots(Request $request){
+        $patient = $request->session()->get('patient');
       /* get the doctor list with the selected department */
       $selectedDate = $request->appointment;
-      $departmentUsers = Department::find(1)->users()->get();
+      $departmentUsers = Department::find($patient->department)->users()->get();
       $deptDocIds = [];
       foreach($departmentUsers as $deptUser){
           if(!empty($deptUser->doctor))
             array_push($deptDocIds, $deptUser->doctor->id);
       }
+      if(empty($deptDocIds)){
+        return response()->json(array('success' => false, 'error' => "Doctor assignment failed!"));  
+      }
+
       foreach($deptDocIds as $deptDocId){
         $timeSlots = array('08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30',
         '14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30');
@@ -53,7 +59,6 @@ class PatientController extends Controller
               }
             }
             $doctorWiseAvailabilty[$deptDocId] = $timeSlots ;
-
       }
       $availableTimeSlots = array_unique(call_user_func_array('array_merge', $doctorWiseAvailabilty));
       asort($availableTimeSlots);
@@ -64,38 +69,47 @@ class PatientController extends Controller
 
     /*book/appoint doctor to patient start*/
 
-
+    /*generate order */
     public function postRegisterAppointment(Request $request){
-     /* get the doctor list with the selected department */
-     echo "<pre>"; print_r($request->all());
-        $selectedDate = $request->appointment;
-        $departmentUsers = Department::find(1)->users()->get();
-        $deptDocIds = [];
-        foreach($departmentUsers as $deptUser){
-            if(!empty($deptUser->doctor))
-              array_push($deptDocIds, $deptUser->doctor->id);
-        }
-        foreach($deptDocIds as $deptDocId){
-          $app = Appointment::where('doctor_id', $deptDocId)
-          ->where('start_time', $request->appointmentTime)
-          ->whereDay('date', '=', date("d", strtotime($request->appointmentDate)))
-          ->get()->toArray();
-          if(empty($app)){
-            $appointment = new Appointment;
-            $appointment->patient_id = 2;
-            $appointment->doctor_id = $deptDocId;
-            $appointment->patient_id = '1';
-            $appointment->date = date("Y-m-d", strtotime($request->appointmentDate));
-            $appointment->start_time = $request->appointmentTime;
-            $appointment->isBooked = "yes";
-            $appointment->isCancelled = 0;
-            $appointment->Save();
-            dd($appointment);
-          }
-          
-        }
-    }
+      // dd($request->post());
+      $validatedData = $request->validate([
+            "appointmentDate" => "required",
+            "appointmentTime" => "required",
+       ]);
+        $patient = $request->session()->get('patient');
+        $patient->appointmentDate =  $request->appointmentDate;
+        $patient->appointmentTime = $request->appointmentTime;
+        
+        $department = Department::find($patient->department);
+        $request->session()->put('patient', $patient);
+        
+        /*api call for generate order and payment screen*/
+        $api = new Api($this->razorpayId, $this->razorpayKey);
+        $receiptId = Str::random(20);
+        $order = $api->order->create(array(
+          'receipt' => $receiptId,
+          'amount' => ($department->fee * 100),
+          'currency' => 'INR'
+          )
+        );
 
+        $response = [
+                'orderId'=> $order['id'],
+                'razorpayId' => $this->razorpayId,
+                'amount' => $department->fee * 100,
+                'name'=> $patient->name,
+                'currency' => 'INR',
+                'email' => $patient->email,
+                'contactNumber' => $patient->number,
+                'address' => $patient->address,
+                'discription' => 'Appotment for ' .$department->name. 'Department!',
+        ];
+        return response()->json([
+          'success'=>true,
+          'values'=> $response,
+        ]);
+    }
+    /*end generating order*/
 
     /*book/appoint doctor to patient ends*/
     public function index( Request $request)
@@ -108,6 +122,7 @@ class PatientController extends Controller
    public function postResiterPatient(Request $request)
    {
      // echo "here"; die;
+
        $validatedData = $request->validate([
             "title" => "required",
             "name" => "required",
@@ -208,7 +223,7 @@ class PatientController extends Controller
    }
 
 
-
+   /*
     public function postRegisterAppointment1(Request $request)
     {
 
@@ -243,46 +258,13 @@ class PatientController extends Controller
           'values'=> $response,
         ]);
     }
+    */
 
    public function removeImage(Request $request)
     {
         $patient = $request->session()->get('patient');
         $patient->photo = null;
         return view('patient.create-step2',compact('patient', $patient));
-    }
-
-
-    public function create()
-    {
-        //
-
-    }
-
-    public function store(Request $request)
-    {
-        //
-    }
-
-
-    public function show($id)
-    {
-        //
-    }
-
-
-    public function edit($id)
-    {
-    }
-
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-
-    public function destroy($id)
-    {
-        //
     }
 
     public function imageUpload($img, $user, $name )    {
@@ -321,13 +303,11 @@ class PatientController extends Controller
       $order['contactNumber'] = $request->contactNumber ;
       $order['description'] = $request->description ;
       $order['amount'] = $request->amount ;
-
       $patient = $request->session()->get('patient');
-
-       $_signatureStatus= $this->signatureVarify(  $request->rzp_paymentid,  $request->rzp_orderid,  $request->rzp_signature);
+      $_signatureStatus= $this->signatureVarify(  $request->rzp_paymentid,  $request->rzp_orderid,  $request->rzp_signature);
 
       if($_signatureStatus == true){
-        $patientregister = $this->patientRegister($patient, $order);
+         $patientregister = $this->patientRegister($patient, $order);
         if($patientregister){
           $request->session()->forget('patient');
           unset($patient);
@@ -389,38 +369,71 @@ class PatientController extends Controller
       $newPatient->marital    =     $patient->marital     ;
       $newPatient->photo    =     $patient->photo      ;
       $newPatient->proof    =     $patient->proof     ;
+      
       if ($user->save())
       {
+
           $user->roles()->attach($role);
-
-          // $user = User::find(2);
+          /*payment create first*/$payment = new Payment;
+          $payment->contact = $order['contactNumber'] ;
+          $payment->email = $order['email'] ;
+          $payment->amount = $order['amount'] ;
+          $payment->rzp_paymentid = $order['rzp_paymentid'] ;
+          $payment->rzp_orderid = $order['rzp_orderid'] ;
+          $payment->rzp_signature = $order['rzp_signature'] ;
+          $payment->token = $order['_token'] ;
+          $payment->description = $order['description'] ;
+          $payment->save();
+          $user->payments()->attach($payment);
+          /*payment create end*/
           $newPatient->user_id    =     $user->id;
-
-          $user->patient()->save($newPatient);
           $user->departments()->attach($department);
-          if(!empty($patient->reports)){
-          foreach($patient->reports as $key => $value){
-            $report = new Report;
-            $report->report = $value;
-            $report->save();
-            $newPatient->reports()->attach($report);
-          }}
-          $user->sendEmailVerificationNotification();
-        }
-        // dd($order['contactNumber']);
-        $payment = new Payment;
-        $payment->contact = $order['contactNumber'] ;
-        $payment->email = $order['email'] ;
-        $payment->amount = $order['amount'] ;
-        $payment->rzp_paymentid = $order['rzp_paymentid'] ;
-        $payment->rzp_orderid = $order['rzp_orderid'] ;
-        $payment->rzp_signature = $order['rzp_signature'] ;
-        $payment->token = $order['_token'] ;
-        $payment->description = $order['description'] ;
-        $payment->save();
-        $user->payments()->attach($payment);
-        return true;
+          if($user->patient()->save($newPatient)){
+              /*appointment insert*/
+              $departmentUsers = Department::find($patient->department)->users()->get();
+              $deptDocIds = [];
+              foreach($departmentUsers as $deptUser){
+                  if(!empty($deptUser->doctor))
+                    array_push($deptDocIds, $deptUser->doctor->id);
+              }
+                // echo "<pre> dep doc-id"; print_r($deptDocIds);
+              
+              foreach($deptDocIds as $deptDocId){
+                $freeTimeslot = Appointment::where('doctor_id', $deptDocId)
+                ->where('start_time', $patient->appointmentTime)
+                ->whereDay('date', '=', date("d", strtotime($patient->appointmentDate)))
+                ->get()->toArray();
+                if(empty($freeTimeslot)){
+                  $appointment = new Appointment;
+                  $appointment->patient_id = $newPatient->id;
+                  $appointment->doctor_id = $deptDocId;
+                  $appointment->patient_id = '1';
+                  $appointment->date = date("Y-m-d", strtotime($patient->appointmentDate));
+                  $appointment->start_time = $patient->appointmentTime;
+                  $appointment->isBooked = "yes";
+                  $appointment->isCancelled = 0;
+                  if($appointment->Save()) break;
+                }
+                else{
+                  Toastr::info('Success Response Our Team Will Contact You Soon!:', 'Success');
+                }
+              }//foreach end
+              /*appointment insert end*/
+            if(!empty($patient->reports)){
+              foreach($patient->reports as $key => $value){
+                $report = new Report;
+                $report->report = $value;
+                $report->save();
+                $newPatient->reports()->attach($report);
+              }
+            }///!empty reprts check end
+            $user->sendEmailVerificationNotification();
+ 
+          }
       }
+        
+        return true;
+    }/*registration process ends here*/
 
       public function registerComplete( Request $request){
         return view('layouts.patient.paymentsuccess');
@@ -441,4 +454,5 @@ class PatientController extends Controller
 
 
 
+      
 }

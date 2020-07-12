@@ -22,11 +22,11 @@ class CreateAppointmentsTable extends Migration
                     ->references('id')->on('patients')->onDelete('cascade');;
             $table->foreign('doctor_id')
                             ->references('id')->on('doctors')->onDelete('cascade');;
-            $table->datetime('start_time')->nullable();
-            $table->datetime('finish_time')->nullable();
+            $table->date('date')->nullable();
+            $table->string('start_time')->nullable();
             $table->boolean('isCurrentlyActive')->nullable();
-            $table->string('isbooked')->nullable();
-            $table->boolean('isCancelled')->nullable();
+            $table->string('isbooked')->default("booked");
+            $table->boolean('isCancelled')->default(false);
 
             $table->timestamps();
             $table->softDeletes();

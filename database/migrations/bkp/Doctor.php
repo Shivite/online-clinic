@@ -22,5 +22,7 @@ class Doctor extends Model
        return $this->belongsToMany('App\Department');
     }
 
+    
+
 
 }

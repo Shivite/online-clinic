@@ -10,4 +10,10 @@ class Appointment extends Model
   {
      return $this->belongsTo('App\Doctor');
   }
+
+  public function patient() //relationship tested running @ tinker
+  {
+     return $this->belongsTo('App\Patient');
+  }
+  
 }

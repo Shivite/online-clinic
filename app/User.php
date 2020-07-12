@@ -70,6 +70,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
+
     /**
      * Send the password reset notification.
      *

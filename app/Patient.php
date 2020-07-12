@@ -13,6 +13,10 @@ class Patient extends Model
        return $this->belongsTo('App\User');
     }
 
+    public function appointments(){
+      return $this->belongsToMany('App\Appointment');
+    }
+
     public function reports(){
       return $this->belongsToMany('App\Report');
     }
