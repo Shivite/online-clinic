@@ -1,17 +1,17 @@
 <?php
-
 namespace App\Http\Controllers\Patient;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Patient;
 use App\Department;
 use App\Report;
 use App\Payment;
+use App\Appointment;
 use File;
 use Image;
-use Auth;
+    use Auth;
 use Illuminate\Support\Facades\Storage;
+
 use Illuminate\Support\Str;
 use Razorpay\Api\Api;
 use App\User;
@@ -22,15 +22,82 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Foundation\Auth\RegistersUsers;
 class PatientController extends Controller
 {
-  public function __construct()
-  {
+  public function __construct()  {
     $this->middleware('auth', ['only' => 'profie']);
-  }
+    } 
 
-    private $razorpayId= 'rzp_test_1z4vEE23O5vJ6R';
+        private $razorpayId= 'rzp_test_1z4vEE23O5vJ6R';
     private $razorpayKey= 'QQOe1YLieKNYPRwK4lL6x1fd' ;
 
+    /*get available time slots starts */
 
+    public function postRegisterGetAppointmentTimeSlots(Request $request){
+      /* get the doctor list with the selected department */
+      $selectedDate = $request->appointment;
+      $departmentUsers = Department::find(1)->users()->get();
+      $deptDocIds = [];
+      foreach($departmentUsers as $deptUser){
+          if(!empty($deptUser->doctor))
+            array_push($deptDocIds, $deptUser->doctor->id);
+      }
+      foreach($deptDocIds as $deptDocId){
+        $timeSlots = array('08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30',
+        '14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30');
+        $app = Appointment::select('doctor_id', 'start_time')
+            ->where('doctor_id', $deptDocId )
+            ->where('date', '=',$selectedDate)
+            ->get()->toArray();
+            foreach($app as $ap){
+              if($index = array_search($ap['start_time'], $timeSlots)){
+                unset($timeSlots[$index]);
+              }
+            }
+            $doctorWiseAvailabilty[$deptDocId] = $timeSlots ;
+
+      }
+      $availableTimeSlots = array_unique(call_user_func_array('array_merge', $doctorWiseAvailabilty));
+      asort($availableTimeSlots);
+      $returnHTML = view('layouts.patient.time-slots')->with('availableTimeSlots', $availableTimeSlots)->render();
+      return response()->json(array('success' => true, 'html'=>$returnHTML));
+    }
+    /*get available timeslot end*/
+
+    /*book/appoint doctor to patient start*/
+
+
+    public function postRegisterAppointment(Request $request){
+     /* get the doctor list with the selected department */
+     echo "<pre>"; print_r($request->all());
+        $selectedDate = $request->appointment;
+        $departmentUsers = Department::find(1)->users()->get();
+        $deptDocIds = [];
+        foreach($departmentUsers as $deptUser){
+            if(!empty($deptUser->doctor))
+              array_push($deptDocIds, $deptUser->doctor->id);
+        }
+        foreach($deptDocIds as $deptDocId){
+          $app = Appointment::where('doctor_id', $deptDocId)
+          ->where('start_time', $request->appointmentTime)
+          ->whereDay('date', '=', date("d", strtotime($request->appointmentDate)))
+          ->get()->toArray();
+          if(empty($app)){
+            $appointment = new Appointment;
+            $appointment->patient_id = 2;
+            $appointment->doctor_id = $deptDocId;
+            $appointment->patient_id = '1';
+            $appointment->date = date("Y-m-d", strtotime($request->appointmentDate));
+            $appointment->start_time = $request->appointmentTime;
+            $appointment->isBooked = "yes";
+            $appointment->isCancelled = 0;
+            $appointment->Save();
+            dd($appointment);
+          }
+          
+        }
+    }
+
+
+    /*book/appoint doctor to patient ends*/
     public function index( Request $request)
     {
 
@@ -142,7 +209,7 @@ class PatientController extends Controller
 
 
 
-    public function postRegisterAppointment(Request $request)
+    public function postRegisterAppointment1(Request $request)
     {
 
         $patient = $request->session()->get('patient');

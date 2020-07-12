@@ -25,7 +25,16 @@ Route::post('/registration/patient/department', 'Patient\PatientController@postr
 Route::post('/registration/patient/reports', 'Patient\PatientController@postRegisterReports')->name('register.reports');
 Route::get('/registration/reports', 'Patient\PatientController@registerReports')->name('patient.reports');
 Route::get('/registration/appointment', 'Patient\PatientController@registerAppointment')->name('patient.appintment');
-Route::post('/registration/patient/appointment', 'Patient\PatientController@postRegisterAppointment')->name('register.appointment');
+/* tesing route appointment */
+
+Route::get('/registration/appointment/test', function(){
+        return view('layouts.patient.registerappintmentTest');;
+});
+
+Route::post('/registration/patient/timeslots', 'Patient\PatientController@postRegisterGetAppointmentTimeSlots')->name('register.appointment.timeslots');
+
+/* tesitn route appintment end */
+Route::post('/registration/patient/appointment', 'Patient\PatientController@postRegisterAppointment')->name('post.register.appointment');
 Route::post('/registration/payment/Complete', 'Patient\PatientController@razorPaymentComplete')->name('patient.payment');
 Route::get('/registration/complete', 'Patient\PatientController@registerComplete')->name('payment.success');
 Route::get('/registration/failure', 'Patient\PatientController@registerFailure')->name('payment.fail');

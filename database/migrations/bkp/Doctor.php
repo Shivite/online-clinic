@@ -12,5 +12,15 @@ class Doctor extends Model
     {
        return $this->belongsTo('App\User');
     }
+    public function appointments() //relationship tested running @ tinker
+    {
+       return $this->belongsToMany('App\Appointment');
+    }
+
+    public function departments() //relationship tested running @ tinker
+    {
+       return $this->belongsToMany('App\Department');
+    }
+
 
 }
