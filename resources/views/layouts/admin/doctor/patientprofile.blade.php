@@ -20,93 +20,114 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12 col-12">
+            <div class="col-md-6">
                 <div class="info-box">
-                    <div class="col-md-8">
-                        <div class="card card-widget widget-user-2">
-                            <!-- Add the bg color to the header using any of the bg-* classes -->
-                            <div class="widget-user-header bg-info">
-                                <div class="widget-user-image">
-                                    @php $profilePic = asset('storage/patient/'.$patient->email.'/'. $patient->photo);
-                                    @endphp
-                                    <img class="img-circle elevation-2" src="{{ $profilePic }}" alt="User Avatar">
-                                </div>
-                                <!-- /.widget-user-image -->
-                                <h3 class="widget-user-username">{{ ucwords($patient->name) }}</h3>
-                                <h5 class="widget-user-desc">Patient Id : PR00{{ucwords($patient->id)}}</h5>
+
+                    <div class="card card-widget widget-user-2" style="width:100%">
+                        <!-- Add the bg color to the header using any of the bg-* classes -->
+                        <div class="widget-user-header bg-info">
+                            <div class="widget-user-image">
+                                @php $profilePic = asset('storage/patient/'.$patient->email.'/'. $patient->photo);
+                                @endphp
+                                <img class="img-circle elevation-2" src="{{ $profilePic }}" alt="User Avatar">
                             </div>
-                            <div class="card-footer p-0">
-                                <ul class="nav flex-column">
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            PATIENT ADDRESS <span
-                                                class="float-right badge bg-success">{{ ucwords($patient->address) }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            PATIENT DOB <span
-                                                class="float-right badge bg-success">{{ ucwords($patient->dob)}}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            PATIENT AGE <span
-                                                class="float-right badge bg-success">{{ ucwords($patient->age )}}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            GENDER <span
-                                                class="float-right badge bg-success">{{ ucwords($patient->gender )}}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            RELIGION <span
-                                                class="float-right badge bg-success">{{ ucwords($patient->religion )}}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            LANGUAGE <span
-                                                class="float-right badge bg-success">{{ ucwords($patient->language )}}</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#" class="nav-link">
-                                            MARITAL STATUS <span
-                                                class="float-right badge bg-success">{{ ucwords($patient->marital )}}</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <!-- /.widget-user-image -->
+                            <h3 class="widget-user-username">{{ ucwords($patient->name) }}</h3>
+                            <h5 class="widget-user-desc">Patient Id : PR00{{ucwords($patient->id)}}</h5>
                         </div>
-                        <!-- card end -->
+                        <div class="card-footer p-0">
+                            <ul class="nav flex-column">
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        PATIENT ADDRESS <span
+                                            class="float-right badge bg-success">{{ ucwords($patient->address) }}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        PATIENT DOB <span
+                                            class="float-right badge bg-success">{{ ucwords($patient->dob)}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        PATIENT AGE <span
+                                            class="float-right badge bg-success">{{ ucwords($patient->age )}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        GENDER <span
+                                            class="float-right badge bg-success">{{ ucwords($patient->gender )}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        RELIGION <span
+                                            class="float-right badge bg-success">{{ ucwords($patient->religion )}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        LANGUAGE <span
+                                            class="float-right badge bg-success">{{ ucwords($patient->language )}}</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        MARITAL STATUS <span
+                                            class="float-right badge bg-success">{{ ucwords($patient->marital )}}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="col-md-4">
-
-                        @if(!$appointments->isEmpty())
-                        @foreach($appointments as $appointment)
-                        @php
-                        $start = \Carbon\Carbon::createFromTimeString($appointment->start_time);
-                        $end = \Carbon\Carbon::createFromTimeString($appointment->start_time)->addMinutes('30');
-                        $now = \Carbon\Carbon::now();
-                        @endphp
-                        @if($now->between($start, $end))
-                        <a href="/video" class="btn btn-info">Video Chat</a>
-                        @else
-                        <button>Video Chat Not</button>
-                        @endif
-                        @endforeach
-                        @endif
-
-                    </div>
+                    <!-- card end -->
                 </div>
-                <!-- /.info-box -->
+            </div>
+
+            <div class="col-md-6">
+
+                <div class="card card-info" style="transition: all 0.15s ease 0s; height: inherit; width: inherit;">
+                    <div class="card-header">
+                        <h3 class="card-title">Meeting Available On Time</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="maximize"><i
+                                    class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                        <!-- /.card-tools -->
+                    </div>
+                    @if(!$appointments->isEmpty())
+                    @foreach($appointments as $appointment)
+                    @php
+                    $start = \Carbon\Carbon::createFromTimeString($appointment->start_time);
+                    $end = \Carbon\Carbon::createFromTimeString($appointment->start_time)->addMinutes('30');
+                    $now = \Carbon\Carbon::now();
+                    $room = $appointment->doctor_id;
+                    @endphp
+                    @if($now->between($start, $end))
+                    <div class="card-body" style="min-height:373px">
+                        <div id="otEmbedContainer" style="width:100%; height:330px;"></div>
+                        <script
+                            src="https://tokbox.com/embed/embed/ot-embed.js?embedId=2ac73469-77f1-42c0-b68d-a496a6cfd988&room={{$room}}">
+                        </script>
+                    </div>
+                    @else
+                    <div class="card-body" style="background-image:url('{{asset('images/wait.jpg')}}');
+                            background-repeat:no-repeat;background-size: contain; align=center; min-height:373px">
+                    </div>
+                    @endif
+                    @endforeach
+                    @endif
+
+                    <!-- /.card-body -->
+                </div>
             </div>
         </div>
-        <div class="row">
+        <!-- /.info-box -->
+
+        <div class=" row">
             <!-- analysis details porttaion start -->
             <div class="col-md-8">
                 @include('layouts.admin.doctor.partial.patientanalysis')
