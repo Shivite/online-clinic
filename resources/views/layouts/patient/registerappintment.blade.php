@@ -13,7 +13,6 @@
                 <br /><br />
                 <div id="appointment_date"></div>
                 <div id="time_slots"></div>
-
             </div>
             <div class="row">
                 <div class="col-sm-3">

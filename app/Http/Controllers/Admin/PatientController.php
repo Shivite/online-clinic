@@ -15,6 +15,7 @@ use App\AnalysisFifth;
 use App\AnalysisSixth;
 use App\AnalysisSeventh;
 use App\AnalysisEight;
+use App\Payment;
 use Image;
 use Illuminate\Support\Facades\Storage;
 use Brian2694\Toastr\Facades\Toastr;
@@ -273,5 +274,13 @@ class PatientController extends Controller
       }
       return back()->with('patient', $patient);
     }
+
+    /*patient payments for admin */
+    public function patientPayments(){
+      if (!Auth::user()->hasAnyRole(['admin'])) return  abort(404) ;          
+      return view('layouts.admin.patient.payment.index')
+            ->with('payments', Payment::all());
+    }
+    /*patient payments end*/
 
 }

@@ -32,6 +32,7 @@ class CreateAnalysisFourthsTable extends Migration
             $table->string("curriculam")->nullable();
             $table->string("conclussion")->nullable();
             $table->string("fairful_object")->nullable();
+            $table->string("embarrassing")->nullable();
             $table->string('_token',100);          
             $table->timestamps();
         });

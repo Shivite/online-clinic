@@ -20,9 +20,9 @@ class CreatePatientTable extends Migration
                     ->references('id')->on('users')->onDelete('cascade');;
             $table->string('title');
             $table->string('name');
-            $table->bigInteger('number')->unique();;
+            $table->bigInteger('number');
             $table->bigInteger('alt_number')->nullable();
-            $table->string('email')->unique();
+            $table->string('email');
             $table->longText('address');
             $table->string('pin');
             $table->string('legalgaurdian');

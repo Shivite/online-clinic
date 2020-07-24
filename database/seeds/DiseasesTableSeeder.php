@@ -23,7 +23,7 @@ class DiseasesTableSeeder extends Seeder
        $dept2 = Department::where('name', 'oncology')->first();
        $dept3 = Department::where('name', 'gastro & proctology')->first();
        $dept4 = Department::where('name', 'pulmonology & allergy')->first();
-       $dept5 = Department::where('name', 'corthopedic')->first();
+       $dept5 = Department::where('name', 'orthopedic')->first();
 
 
        $dept1rec1 = Disease::create([

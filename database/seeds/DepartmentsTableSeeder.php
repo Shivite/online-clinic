@@ -41,7 +41,7 @@ class DepartmentsTableSeeder extends Seeder
         'fee'     =>   1000
       ]);Department::create([
 
-        'name'    => 'corthopedic',
+        'name'    => 'orthopedic',
         'image'    => 'cortopedic.png',
         'fee'     =>   1500
       ]);

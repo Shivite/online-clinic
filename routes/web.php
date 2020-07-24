@@ -18,6 +18,9 @@
 Route::get('/', function () {
     return view('layouts.frontend.index');
 });
+Route::get('/email', function () {
+    return view('layouts.email.prescriptionEmailTemplate');
+});
 Route::get('registerpatient', 'Patient\PatientController@index')->name('registerpatient');
 Route::post('/registration/register/patient', 'Patient\PatientController@postResiterPatient')->name('patient.registration');
 Route::get('/registration/department', 'Patient\PatientController@registerDepartment')->name('patient.department');
@@ -46,8 +49,11 @@ Route::get('patient/profile', 'Patient\PatientController@profile')->name('patien
 Route::get('admin/dashboard', 'Admin\AdminController@index')->name('dashboard')->middleware('verified');
 Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
   Route::resource('/users', 'UserController');
+  
+  Route::get('/patient/payments', 'PatientController@patientPayments')->name('patient.payments');;
   Route::put('/user/updatepassword', 'UserController@updatepassword')->name('user.updatepassword');
   Route::resource('/patient', 'PatientController');
+  
   Route::put('/patient/analysis-1/{patient}', 'PatientController@analysisFirst')->name('patient.analysis.first');;
   Route::put('/patient/analysis-2/{patient}', 'PatientController@analysisSecond')->name('patient.analysis.second');;
   Route::put('/patient/analysis-3/{patient}', 'PatientController@analysisThird')->name('patient.analysis.third');;
@@ -56,10 +62,23 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
   Route::put('/patient/analysis-6/{patient}', 'PatientController@analysisSixth')->name('patient.analysis.sixth');;
   Route::put('/patient/analysis-7/{patient}', 'PatientController@analysisSeventh')->name('patient.analysis.seventh');;
   Route::put('/patient/analysis-8/{patient}', 'PatientController@analysisEight')->name('patient.analysis.eight');;
-
+  Route::get('/appointments', 'AdminController@appointments')->name('appointments');
+  Route::get('/admin/reappointment/{appointment}', 'AdminController@reappointment')->name('reappointment');
+  Route::post('/admin/get/timeslots/', 'AdminController@getTimeSlot')->name('get.timeslot');
+  Route::post('/admin/reschedule/', 'AdminController@reScheduleAppointment')->name('reschedule.appointment');
 });
 Route::get('doctor/profile', 'Doctor\DoctorController@profile')->name('doctor.profile')->middleware('verified');
-Route::namespace('Doctor')->group(function(){
-  Route::resource('/doctor', 'DoctorController');
 
+Route::namespace('Doctor')->middleware('verified')->group(function(){
+  Route::resource('/doctor', 'DoctorController');
+  Route::get('/doctor/analysis/desk', 'DoctorController@analysisDesk')->name('doctor.analysisDesk');
+  Route::get('/doctor/appointment', 'DoctorController@')->name('doctor.appointment');
+  Route::get('/doctor/patient/profile/{patientId}', 'DoctorController@patientProfile')->name('doctor.patient.profile');
+  Route::get('/doctor/visit/report', 'DoctorController@visitReport')->name('doctor.visitReport');
+  Route::get('/doctor/search/id', 'DoctorController@searchID')->name('doctor.searchId');
+  Route::put('doctor/appointment/reschedule/{appointment}','DoctorController@rescheduleAppointment')->name('doctor.appointment.reschedule');
+  Route::post('/doctor/patient/newprescription','DoctorController@patientNewPrescriptionStore')->name('doctor.patient.prescription');
+  Route::get('/video', function () {
+    return view('layouts.admin.doctor.video');
+});
 });
