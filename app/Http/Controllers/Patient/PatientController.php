@@ -7,9 +7,11 @@ use App\Department;
 use App\Report;
 use App\Payment;
 use App\Appointment;
+use App\Priscription;
+
 use File;
 use Image;
-    use Auth;
+   use Auth;
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Str;
@@ -280,7 +282,7 @@ class PatientController extends Controller
             if (!Storage::disk('patient')
                 ->exists($patientFolder))
                   Storage::disk('patient')->makeDirectory($patientFolder);
-            $customImage = Image::make($img)->resize(150, 150)->save($imgName, 90);
+            $customImage = Image::make($img)->save($imgName, 90);
             Storage::disk('patient')->put($patientFolder.'/'.  $imgName, $customImage);
         }
         else
@@ -449,7 +451,18 @@ class PatientController extends Controller
 
         if(!Auth::user()->hasRole('patient')) return abort(404);
         $patient = Auth::user()->patient;
-        return view('layouts.patient.dashboard.profile')->with('patient', $patient);
+        $prescriptions = Priscription::select('priscriptions.*', 'users.name as doctorName', 'users.email as doctorEmail', 'doctors.sign as doctorSignature', 'doctors.specialization as doctorSpecialization')
+            ->leftJoin('doctors', 'doctors.id', '=', 'priscriptions.doctor_id')
+            ->leftJoin('users', 'users.id', '=', 'doctors.user_id')
+            ->where('priscriptions.patient_id', $patient->id)
+            ->get();
+
+         $appointments = Appointment::where('patient_id',$patient->id)
+        ->whereDate('date', '=', Carbon::today()->toDateString())
+        ->where('status', '<>', 'success')
+        ->get();
+    
+        return view('layouts.admin.patient.profile')->with(compact('patient','prescriptions','appointments'));
       }
 
 

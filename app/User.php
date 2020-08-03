@@ -46,6 +46,12 @@ class User extends Authenticatable implements MustVerifyEmail
         if($this->roles()->where('name', $role)->first())  return true;
         return false;
     }
+    
+    public function hasDept( $dept ){
+        if($this->departments()->where('name', $role)->first())  return true;
+        return false;
+    }
+
     public function roles(){
       return $this->belongsToMany('App\Role');
     }
@@ -64,6 +70,8 @@ class User extends Authenticatable implements MustVerifyEmail
     public function patient(){
       return $this->hasOne('App\Patient');
     }
+
+
 
     public function payments(){
       return $this->belongsToMany('App\Payment');

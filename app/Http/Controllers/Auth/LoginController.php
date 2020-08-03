@@ -33,7 +33,7 @@ class LoginController extends Controller
      {
         if(Auth::user()->hasrole('admin'))  return '/admin/users';
         if(Auth::user()->hasrole('doctor'))  return '/doctor/profile';
-        if(Auth::user()->hasrole('staff'))  return '/admin/users';
+        if(Auth::user()->hasrole('staff'))  return '/admin/patient';
         if(Auth::user()->hasrole('patient'))  return 'patient/profile';
      }
     /**

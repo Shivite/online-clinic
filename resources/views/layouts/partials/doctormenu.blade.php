@@ -49,27 +49,10 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('doctor.analysisDesk')}}" class="nav-link">
-                        <i class="nav-icon fas fa-heartbeat  "></i>
-                        <p>
-                            Analysis Desk
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('doctor.visitReport')}}" class="nav-link">
-                        <i class="nav-icon fas fa-file"></i>
-                        <p>
-                            Visit Reports
-                        </p>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('doctor.searchId')}}" class="nav-link">
+                    <a href="{{ route('doctor.patientslist')}}" class="nav-link">
                         <i class="nav-icon fas fa-search "></i>
                         <p>
-                            Search With ID
+                            Patients
                         </p>
                     </a>
                 </li>

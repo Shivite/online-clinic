@@ -38,6 +38,7 @@ class CreatePatientTable extends Migration
             $table->string('marital');
             $table->binary('photo');
             $table->binary('proof');
+            $table->string('is_alopathy', 10)->nullable();
             $table->timestamps();
         });
     }

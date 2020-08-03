@@ -10,13 +10,11 @@
     <!-- /.card-header -->
     <div class="card-body" style="display: none;">
         @foreach($prescriptions as $prescription)
-
         <button class="btn btn-primary tag_cnt float-left" style="margin:1px"
             onclick="showModal('{{ json_encode($prescription) }}')" type="button"
             value="1">{{$prescription->doctorName}} - {{ $prescription->created_at->format('d-m-Y') }}</button>
 
         @endforeach
-
     </div>
     <!-- /.card-body -->
 </div>
@@ -66,17 +64,11 @@
 function showModal(data) {
     console.log(data);
     var data = JSON.parse(data = data.replace(/\n/g, "<br>").replace(/\r/g, "\\r").replace(/\t/g, "\\t"));
-
-    console.log(123);
-    console.log(data);
-    // var data = JSON.parse(data);
-
     $("#myModal #doctorData").html(data.doctorName + '<br>' + '[' + data.doctorSpecialization + ']');
     (data.prescription != null) ? $("#myModal #prescription").html(data.prescription): '';
     $(
             "#myModal #sign")
         .attr('src', "{{ asset('storage/doctor/profile/')}}" + '/' + data.doctorSignature);
-
     $("#myModal").modal();
 }
 </script>

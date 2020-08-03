@@ -16,6 +16,8 @@ use App\AnalysisSixth;
 use App\AnalysisSeventh;
 use App\AnalysisEight;
 use App\Payment;
+use App\Symptom;
+use App\Report;
 use Image;
 use Illuminate\Support\Facades\Storage;
 use Brian2694\Toastr\Facades\Toastr;
@@ -155,7 +157,7 @@ class PatientController extends Controller
             if (!Storage::disk('patient')
                 ->exists($patientFolder))
                   Storage::disk('patient')->makeDirectory($patientFolder);
-            $customImage = Image::make($img)->resize(150, 150)->save($imgName, 90);
+            $customImage = Image::make($img)->save($imgName, 90);
             Storage::disk('patient')->put($patientFolder.'/'.  $imgName, $customImage);
         }
         else
@@ -275,6 +277,45 @@ class PatientController extends Controller
       return back()->with('patient', $patient);
     }
 
+    public function newSymptoms(Request $request){
+      // dd($request->all());
+      if (!Auth::user()->hasRole(['patient'])) return  abort(404) ;
+      $patient = Auth::user()->patient;
+      $request->validate([
+       'uploadreport1' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport2' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport3' => 'image|mimes:jpeg,png,jpg |max:2048',
+       'uploadreport4' => 'image|mimes:jpeg,png,jpg |max:2048',
+    ]);
+    // dd($request->all());
+    $symptom = new Symptom;
+    $symptom->symptom = $request->symptoms;
+    $symptom->comment = $request->comments;
+    
+     $report = array();
+    if ($request->hasFile('uploadreport1')) $report["uploadreport1"] = $this->imageUpload($request->file('uploadreport1'), Auth::user()->email,  'uploadreport1');
+    if ($request->hasFile('uploadreport2')) $report["uploadreport2"] = $this->imageUpload($request->file('uploadreport2'),  Auth::user()->email, 'uploadreport2');
+    if ($request->hasFile('uploadreport3')) $report["uploadreport3"] = $this->imageUpload($request->file('uploadreport3'), Auth::user()->email,  'uploadreport3');
+    if ($request->hasFile('uploadreport4')) $report["uploadreport4"] = $this->imageUpload($request->file('uploadreport4'), Auth::user()->email,  'uploadreport4');
+    if(!empty($report)){
+      foreach($report as $key => $value){
+        $report = new Report;
+        $report->report = $value;
+        $report->save();
+        $patient->reports()->attach($report);
+      }
+    }///!empty reprts check end
+    $symptom->patient_id = $patient->id;
+      if($symptom->save())
+        Toastr::success('Symptoms Added Successfully :', 'Success');
+      else
+        Toastr::error('Symptoms Added Successfully :', 'Error');
+    return redirect()->back();
+ }
+
+
+   
+
     /*patient payments for admin */
     public function patientPayments(){
       if (!Auth::user()->hasAnyRole(['admin'])) return  abort(404) ;          
@@ -283,4 +324,5 @@ class PatientController extends Controller
     }
     /*patient payments end*/
 
+    
 }

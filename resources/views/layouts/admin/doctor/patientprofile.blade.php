@@ -27,7 +27,7 @@
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <div class="widget-user-header bg-info">
                             <div class="widget-user-image">
-                                @php $profilePic = asset('storage/patient/'.$patient->email.'/'. $patient->photo);
+                                @php $profilePic = asset('storage/patient/profile/'. $patient->photo);
                                 @endphp
                                 <img class="img-circle elevation-2" src="{{ $profilePic }}" alt="User Avatar">
                             </div>
@@ -87,43 +87,9 @@
             </div>
 
             <div class="col-md-6">
-
-                <div class="card card-info" style="transition: all 0.15s ease 0s; height: inherit; width: inherit;">
-                    <div class="card-header">
-                        <h3 class="card-title">Meeting Available On Time</h3>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="maximize"><i
-                                    class="fas fa-expand"></i>
-                            </button>
-                        </div>
-                        <!-- /.card-tools -->
-                    </div>
-                    @if(!$appointments->isEmpty())
-                    @foreach($appointments as $appointment)
-                    @php
-                    $start = \Carbon\Carbon::createFromTimeString($appointment->start_time);
-                    $end = \Carbon\Carbon::createFromTimeString($appointment->start_time)->addMinutes('30');
-                    $now = \Carbon\Carbon::now();
-                    $room = $appointment->doctor_id;
-                    @endphp
-                    @if($now->between($start, $end))
-                    <div class="card-body" style="min-height:373px">
-                        <div id="otEmbedContainer" style="width:100%; height:330px;"></div>
-                        <script
-                            src="https://tokbox.com/embed/embed/ot-embed.js?embedId=2ac73469-77f1-42c0-b68d-a496a6cfd988&room={{$room}}">
-                        </script>
-                    </div>
-                    @else
-                    <div class="card-body" style="background-image:url('{{asset('images/wait.jpg')}}');
-                            background-repeat:no-repeat;background-size: contain; align=center; min-height:373px">
-                    </div>
-                    @endif
-                    @endforeach
-                    @endif
-
-                    <!-- /.card-body -->
-                </div>
+                @include('layouts.admin.doctor.partial.doctopatientmeeting')
             </div>
+
         </div>
         <!-- /.info-box -->
 
@@ -134,6 +100,7 @@
             </div>
             <!-- col md 8 end -->
             <!-- col md 4 starrt -->
+            @if(!empty($departments))
             <div class="col-md-4">
                 <div class="card card-info collapsed-card">
                     <div class="card-header">
@@ -147,20 +114,29 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body" style="display: none;">
-                        <form>
+                        <form role="form" id="changeDepartment" action="{{route('doctor.change.department', $patient)}}"
+                            method="POST">
+                            @csrf
                             @foreach($departments as $department)
                             <div class="radio">
-                                <label><input type="radio" name="department"
-                                        {{ ($department->id == $patient->user->departments[0]->id ? 'checked' : '' ) }}>
+                                @php
+                                if(!empty($patient->user->departments[0]))
+                                $depId = $patient->user->departments[0]->id ;
+                                else
+                                $depId = 'none';
+                                @endphp
+                                <label><input type="radio" name="department " value={{ $department->id }}
+                                        {{ ($department->id == $depId ? 'checked' : '' ) }}>
                                     {{ ucwords($department->name)}} </label>
                             </div>
                             @endforeach
-                            <button type="button" class="btn btn-block btn-info btn-flat">Save</button>
+                            <button type="submit" class="btn btn-block btn-info btn-flat">Save</button>
                         </form>
                     </div>
                     <!-- /.card-body -->
                 </div>
             </div>
+            @endif
         </div>
         <!-- row end -->
         <!-- analysis details porttaion end -->
@@ -185,16 +161,8 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body" style="display: none;">
-                        @php $i = 1; @endphp
-                        @foreach($patient->reports as $report)
-                        <a href="{{ asset('storage/patient/'.$patient->email.'/'.$report->report) }}"
-                            data-toggle="lightbox" data-title="{{$patient->name}} Reports" data-gallery="gallery">
-                            <p>Report "{{ $i++ }}"</p>
-                        </a>
-                        @endforeach
-
-
-
+                        <!-- /*pass patient elequent to file*/ -->
+                        @include('layouts.admin.patient.partial.patientreports')
                     </div>
                     <!-- /.card-body -->
                 </div>

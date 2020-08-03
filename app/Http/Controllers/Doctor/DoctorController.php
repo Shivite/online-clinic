@@ -33,6 +33,7 @@ class DoctorController extends Controller
 
     public function update(Request $request, $id)
     {
+
       if(!Auth::user()->hasRole('doctor')) return abort(404);
       $this->validate($request,[
         'name' => 'required',
@@ -49,12 +50,12 @@ class DoctorController extends Controller
             $doctor->about = $request->about;
             if($user->save() && $doctor->save()){
               Toastr::success('User updated Successfully :', 'Success');
-              return view('layouts.admin.doctor.profile')->with('user', $user);            }
+              return redirect()->back();
+            }
         }
         else{
           Toastr::error('Error in user update ! <br> Please Try later :', 'Error');
-          return view('layouts.admin.user.index')
-              ->with('users', $users);
+          return redirect()->back();
         }
 
     }
@@ -69,6 +70,15 @@ class DoctorController extends Controller
             ->where('appointments.doctor_id', $user->doctor->id)
             ->whereDate('appointments.date', '=', Carbon::today()->toDateString())
             ->get();
+        // $completed = $pending= $totalApps = 0;
+        // foreach($appointments['today'] as $app){
+        //     ($app->status == 'completed') ? $completed++ : $pending++ ;
+        //     $totalApps++;
+        // }
+        // $appointments['today']['totalCompleted'] = $completed;
+        // $appointments['today']['totalPending'] = $pending;
+        // $appointments['today']['totalApp'] = $totalApps;
+        // // dd($appointments['today']);
             
 
         $appointments['currentWeek'] = Appointment::select('patients.name','appointments.*')
@@ -105,17 +115,19 @@ class DoctorController extends Controller
     }
 
     public function patientProfile($patientId){
+        // dd(Auth::user()->id);
         $patient = Patient::find($patientId);
-        
-        $appointments = Appointment::where('patient_id',$patientId)->where('doctor_id', Auth::user()->id)
+        //today appointments
+        $appointments = Appointment::where('patient_id',$patientId)
+        ->where('doctor_id', Auth::user()->doctor->id)
         ->whereDate('date', '=', Carbon::today()->toDateString())
+        ->where('status', '<>', 'success')
         ->get();
-    //    dd($appointments);
         $prescriptions = Priscription::select('priscriptions.*', 'users.name as doctorName', 'users.email as doctorEmail', 'doctors.sign as doctorSignature', 'doctors.specialization as doctorSpecialization')
             ->leftJoin('doctors', 'doctors.id', '=', 'priscriptions.doctor_id')
             ->leftJoin('users', 'users.id', '=', 'doctors.user_id')
+            ->where('priscriptions.patient_id', $patientId)
             ->get();
-            // dd($prescriptions);
         $departments = Department::all();
         return view('layouts.admin.doctor.patientprofile')->with(compact('patient','departments', 'prescriptions', 'appointments'));
     }
@@ -155,12 +167,12 @@ class DoctorController extends Controller
     public function patientNewPrescriptionStore( Request $request){
         if (!Auth::user()->hasRole(['doctor']))  return abort(404);
         if(!empty($request->prescription)){
-             $patient = Patient::find($request->patientId);
+            $patient = Patient::find($request->patientId);
             $prescription = New Priscription;
             $prescription->patient_id = $request->patientId;
-            $prescription->doctor_id = Auth::user()->id;
+            $prescription->doctor_id = Auth::user()->doctor->id;
             $prescription->prescription = $request->prescription;
-            $doctor = Doctor::find(Auth::user()->id);
+            $doctor =Auth::user()->doctor;;
             if($prescription->save()){
                 $data = array(
                     "docName" => Auth::user()->name,
@@ -185,6 +197,62 @@ class DoctorController extends Controller
     }
     /* new patient prescription store end*/
 
+    /*appointment conmplete from doctor abouve video*/
+  
+    public function appointmentComplete(Appointment $appointment){
+        if (!Auth::user()->hasAnyRole(['doctor'])) return  abort(404) ;
+        if(!empty($appointment)){
+            $appointment->status = 'success';
+            if($appointment->save()){
+                Toastr::success('Prescription created Successfully :', 'Success');
+            }
+        }
+        else{
+            Toastr::error('Somthing went wrong please try after some time! :', 'Error');
+        }
+        return redirect()->back();
+    }
+    /*apointment complete endd*/
+
+    /* doctor search to patinet bu id*/
+    public function patientList(){
+        if (!Auth::user()->hasRole(['doctor'])) return  abort(404) ;
+        return view('layouts.admin.doctor.partial.patientlist');
+    }
+    
+    public function searchWithId(Request $request){
+        if (!Auth::user()->hasRole(['doctor'])) return  abort(404) ;
+        if(empty($request->patientId)){
+            Toastr::error('Somthing Went Wrong :', 'Error');
+        }else{
+            $appointments = Appointment::where('doctor_id', Auth::user()->doctor->id)
+            ->where('patient_id', $request->patientId)->get();
+            
+            if(count($appointments)){
+                return redirect()->route('doctor.patient.profile', $request->patientId);
+            }
+            Toastr::error('Not authorized to access this patient data :', 'Error');
+            return redirect()->back();
+        }
+    }
+    /* doctor search to patinet bu id end */
+
+    /*doctorchange patient department */
+    public function changeDepartment(Request $request, Patient $patient){
+        // dd($request->post());
+        $user = $patient->user;
+        $depId = $patient->user->departments[0];
+        if($user->departments()->detach($depId)){
+               $user->departments()->attach($request->department_);
+               $patient->is_alopathy = 1;
+               $patient->save();
+               Toastr::success('Patient Department Changed Successfully :', 'Success');
+                return redirect()->back();
+        }
+        
+    }
+    /*change department end */
 
     public function distroy($id){}
+    public function show(){ }
 }

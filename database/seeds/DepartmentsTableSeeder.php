@@ -31,6 +31,13 @@ class DepartmentsTableSeeder extends Seeder
       ]);
       Department::create([
 
+        'name'    => 'oncology-alopathy',
+        'image'    => 'oncology.png',
+        'fee'     =>   2000
+      ]);
+      
+      Department::create([
+
         'name'    => 'gastro & proctology',
         'image'    => 'gastro-proctology.png',
         'fee'     =>   1000

@@ -38,6 +38,5 @@
 <script src="{{ asset('js/required/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('js/required/dataTables.responsive.min.js') }}"></script>
 <script src="{{ asset('js/required/responsive.bootstrap4.min.js') }}"></script>
-<!-- <script src="{{ asset('js/custom.js') }}" ></script> -->
-<!-- <script src="{{ asset('js/toastr.min.js') }}" ></script> -->
+<script src="{{ asset('js/custom.js') }}"></script>
 @stop

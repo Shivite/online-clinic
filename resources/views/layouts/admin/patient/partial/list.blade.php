@@ -18,9 +18,13 @@
                 <td> {{ $patient->email }} </td>
                 <td> {{ ucwords(implode(', ', $patient->user->departments()->get()->pluck('name')->toArray())) }} </td>
                 <td>
-                    @if(Auth::user()->hasAnyRole(['admin','staff']))
+                    @if(Auth::user()->hasAnyRole(['admin','staff']) && !(isset(($alopathy)) ))
                     <a href="{{ route('admin.patient.edit', $patient->id)}}" type="button"
                         class="btn btn-info float-left"><i class="fas fa-edit"></i> </a> &nbsp;
+                    @endif
+                    @if(Auth::user()->hasAnyRole(['admin']) && (isset($alopathy)))
+                    <a href="{{ route('admin.patient.appoint.alopathy.doctor', $patient->id)}}" type="button"
+                        class="btn btn-info float-left"><i class="fas fa-user"></i> </a> &nbsp;
                     @endif
 
                     <!-- <form action = "{{ route('admin.patient.destroy', $patient) }}" method="POST" class=" float-left">

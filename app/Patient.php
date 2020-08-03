@@ -62,6 +62,9 @@ class Patient extends Model
        return $this->hasOne('App\AnalysisEight');
     }
 
+    public function symptoms(){
+      return $this->hasMany('App\Symptom');
+    }
 
 
 }

@@ -24,7 +24,11 @@ class CreateAppointmentsTable extends Migration
                             ->references('id')->on('doctors')->onDelete('cascade');;
             $table->date('date')->nullable();
             $table->string('start_time')->nullable();
+            $table->string('status')->default('pending');
+            $table->boolean('reschedule_req')->default(0);
+            $table->boolean('reschedule_status')->default(0);
             $table->boolean('isCurrentlyActive')->nullable();
+            $table->string('isalopathy')->nullable();
             $table->string('isbooked')->default("booked");
             $table->boolean('isCancelled')->default(false);
 
