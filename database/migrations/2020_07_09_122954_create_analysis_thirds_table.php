@@ -26,6 +26,7 @@ class CreateAnalysisThirdsTable extends Migration
             $table->string("season_like")->nullable();
             $table->string("cloth_choice")->nullable();
             $table->string("inflamanation")->nullable();
+            $table->text("men_inflamanation")->nullable();
             $table->string("bedsheet")->nullable();
             $table->string("periodic_symptoms")->nullable();
             $table->string("moon")->nullable();

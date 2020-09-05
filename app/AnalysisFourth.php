@@ -21,6 +21,7 @@ class AnalysisFourth extends Model
   "saddened",
   "noticed",
   "curriculam",
+  "embarrassing",
   "conclussion",
   "fairful_object",
   ];

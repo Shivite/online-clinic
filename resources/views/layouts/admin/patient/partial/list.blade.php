@@ -26,6 +26,10 @@
                     <a href="{{ route('admin.patient.appoint.alopathy.doctor', $patient->id)}}" type="button"
                         class="btn btn-info float-left"><i class="fas fa-user"></i> </a> &nbsp;
                     @endif
+                    @if(Auth::user()->hasAnyRole(['admin']) && (isset($transfered)))
+                    <a href="{{ route('admin.patient.appoint.alopathy.doctor', $patient->id)}}" type="button"
+                        class="btn btn-info float-left"><i class="fas fa-user"></i> </a> &nbsp;
+                    @endif
 
                     <!-- <form action = "{{ route('admin.patient.destroy', $patient) }}" method="POST" class=" float-left">
                 @csrf

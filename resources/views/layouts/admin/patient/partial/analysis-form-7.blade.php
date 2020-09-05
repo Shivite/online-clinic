@@ -16,7 +16,7 @@
         <div class="form-group">
             <label>Mention if any other disease you had and in what ages. Write in detials.</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="additional_disease">{{(isset($patient->analysisSeventh->m_gm_disease)) ? $patient->analysisSeventh->m_gm_disease: '' }}</textarea>
+                name="additional_disease">{{(isset($patient->analysisSeventh->additional_disease)) ? $patient->analysisSeventh->additional_disease: '' }}</textarea>
         </div>
     </div>
 </div>

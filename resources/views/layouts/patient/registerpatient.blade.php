@@ -25,14 +25,21 @@
                                     </label>
                                     <select id="title" class="form-control @error('title') is-invalid @enderror"
                                         name="title">
+
                                         <option
-                                            {{ (isset($patient->title) && $patient->title == 'Ms') ? 'selected': '' }}
+                                            {{ (isset($patient->title) && $patient->title == 'master') ? 'selected': '' }}
+                                            value="master">Master.</option>
+                                        <option
+                                            {{ (isset($patient->title) && $patient->title == 'miss') ? 'selected': '' }}
+                                            value="miss">Miss.</option>
+                                        <option
+                                            {{ (isset($patient->title) && $patient->title == 'mr') ? 'selected': '' }}
                                             value="mr">Mr.</option>
                                         <option
-                                            {{ (isset($patient->title) && $patient->title == 'Ms') ? 'selected': '' }}
+                                            {{ (isset($patient->title) && $patient->title == 'ms') ? 'selected': '' }}
                                             value="ms">Ms.</option>
                                         <option
-                                            {{ (isset($patient->title) && $patient->title == 'Ms') ? 'selected': '' }}
+                                            {{ (isset($patient->title) && $patient->title == 'mrs') ? 'selected': '' }}
                                             value="mrs">Mrs.</option>
                                     </select>
                                 </div>
@@ -82,13 +89,10 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label>Email Address</label>
-                                    <input id="email" type="email"
+                                    <label>Email Address</label><input id="email" type="email"
                                         class="form-control @error('email') is-invalid @enderror" name="email"
                                         value="{{(isset($patient->email)) ? $patient->email: '' }}" autocomplete="email"
-                                        required>
-
-                                    @error('email')
+                                        required>@error('email')
                                     <span class="invalid-feedback custom-err" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
@@ -221,10 +225,13 @@
                                         name="gender" required>
                                         <option
                                             {{ (isset($patient->gender) && $patient->gender == 'male') ? 'selected': '' }}
-                                            value="mr">Male</option>
+                                            value="male">Male</option>
                                         <option
                                             {{ (isset($patient->gender) && $patient->gender == 'female') ? 'selected': '' }}
-                                            value="mr">Female</option>
+                                            value="female">Female</option>
+                                        <option
+                                            {{ (isset($patient->gender) && $patient->gender == 'other') ? 'selected': '' }}
+                                            value="otehr">Other</option>
                                     </select>
                                     @error('gender')
                                     <span class="invalid-feedback custom-err" role="alert">
@@ -264,10 +271,7 @@
                                             value="english">English</option>
                                         <option
                                             {{ (isset($patient->language) && $patient->language == 'hindi') ? 'selected': '' }}
-                                            value="english">Hindi</option>
-                                        <option
-                                            {{ (isset($patient->language) && $patient->language == 'punjabi') ? 'selected': '' }}
-                                            value="panjabi">Pnjabi</option>
+                                            value="hindi">Hindi</option>
                                         <option
                                             {{ (isset($patient->language) && $patient->language == 'bungali') ? 'selected': '' }}
                                             value="bangali">Bangali</option>
@@ -282,17 +286,10 @@
                             <div class="col-sm-2">
                                 <div class="form-group">
                                     <label>Religion</label>
-                                    <select class="form-control" name="religion" required>
-                                        <option
-                                            {{ (isset($patient->religion) && $patient->religion == 'hindu') ? 'selected': '' }}
-                                            value="hindu">Hindu</option>
-                                        <option
-                                            {{ (isset($patient->religion) && $patient->religion == 'muslim') ? 'selected': '' }}
-                                            value="hindu">Muslim</option>
-                                        <option
-                                            {{ (isset($patient->religion) && $patient->religion == 'punjabi') ? 'selected': '' }}
-                                            value="hindu">Punjabi</option>
-                                    </select>
+                                    <input id="religion" type="text"
+                                        class="form-control @error('religion') is-invalid @enderror" name="religion"
+                                        value="{{(isset($patient->religion)) ? $patient->religion: '' }}"
+                                        placeholder="Religion" required>
                                     @error('religion')
                                     <span class="invalid-feedback custom-err" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -306,14 +303,23 @@
                                     <select class="form-control  @error('occupaton') is-invalid @enderror"
                                         name="occupaton" required>
                                         <option
-                                            {{ (isset($patient->occupation) && $patient->occupation == 'business') ? 'selected': '' }}
+                                            {{ (isset($patient->occupaton) && $patient->occupaton == 'business') ? 'selected': '' }}
                                             value="business">Business</option>
                                         <option
-                                            {{ (isset($patient->occupation) && $patient->occupation == 'job') ? 'selected': '' }}
+                                            {{ (isset($patient->occupaton) && $patient->occupaton == 'job') ? 'selected': '' }}
                                             value="job">Job</option>
                                         <option
-                                            {{ (isset($patient->occupation) && $patient->occupation == 'retired') ? 'selected': '' }}
+                                            {{ (isset($patient->occupaton) && $patient->occupaton == 'retired') ? 'selected': '' }}
                                             value="retired">Retired</option>
+                                        <option
+                                            {{ (isset($patient->occupaton) && $patient->occupaton == 'housewife') ? 'selected': '' }}
+                                            value="housewife">House Wife</option>
+                                        <option
+                                            {{ (isset($patient->occupaton) && $patient->occupaton == 'student') ? 'selected': '' }}
+                                            value="student">Student</option>
+                                        <option
+                                            {{ (isset($patient->occupaton) && $patient->occupaton == 'other') ? 'selected': '' }}
+                                            value="other">Other</option>
                                     </select>
                                     @error('docname')
                                     <span class="invalid-feedback custom-err" role="alert">
@@ -335,10 +341,10 @@
                                             value="married">Married</option>
                                         <option
                                             {{ (isset($patient->marital) && $patient->marital == 'divorcee') ? 'selected': '' }}
-                                            value="single">Divorcee</option>
+                                            value="divorcee">Divorcee</option>
 
                                     </select>
-                                    @error('docname')
+                                    @error('marital')
                                     <span class="invalid-feedback custom-err" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

@@ -19,9 +19,11 @@ class AnalysisSecond extends Model
     "sweet_reduce_pain",
     "during_sleep",
     "position_sleep",
+    'after_sleep',
     "frequency",
     "character",
     "U_frequency",
+    "U_character",
     '_token',
   ];
 

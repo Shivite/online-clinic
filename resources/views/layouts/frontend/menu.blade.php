@@ -36,11 +36,11 @@
 
                 @elseif(Auth::user()->hasRole('doctor'))
 
-                @php $path = 'doctor/profile' ; @endphp
+                @php $path = route('doctor.profile') ; @endphp
 
                 @else
 
-                @php $path = 'patient/profile' ; @endphp
+                @php $path = route('patient.profile') ; @endphp
 
                 @endif
 

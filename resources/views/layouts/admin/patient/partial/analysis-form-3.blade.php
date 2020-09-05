@@ -121,8 +121,8 @@
     </div>
     <div class="col-md-12">
         <div class="form-group">
-            <textarea class="form-control" rows="3"
-                placeholder="Mention the part where you feel inflamanation"></textarea>
+            <textarea class="form-control" rows="3" placeholder="Mention the part where you feel inflamanation"
+                name="men_inflamanation">{{ (isset($patient->analysisThird->men_inflamanation) ? $patient->analysisThird->men_inflamanation : '')}}</textarea>
         </div>
     </div>
 </div>

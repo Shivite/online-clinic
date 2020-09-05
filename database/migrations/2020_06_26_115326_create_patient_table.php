@@ -38,7 +38,12 @@ class CreatePatientTable extends Migration
             $table->string('marital');
             $table->binary('photo');
             $table->binary('proof');
+            $table->bigInteger('assinged_doc')->unsigned()->nullable();
+            $table->bigInteger('dept_change_by')->unsigned()->nullable();
+            $table->string('dept_change_status', 10)->nullable();
+            $table->string('is_department_change', 10)->nullable();
             $table->string('is_alopathy', 10)->nullable();
+            $table->string('is_covid', 10)->nullable();
             $table->timestamps();
         });
     }

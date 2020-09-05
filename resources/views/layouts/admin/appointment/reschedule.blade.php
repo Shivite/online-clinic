@@ -47,23 +47,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="date">Appointemnt Date</label>
-                                        <input type="text" name="date" class="form-control" id="date" placeholder="date"
-                                            value=" {{ $appointment->date }}" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="time">Appointemnt Time</label>
-                                        <input type="text" name="time" class="form-control" id="time"
-                                            value="{{ $appointment->start_time}}" readonly>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
@@ -72,7 +55,6 @@
                                         <select id="newdoctor" data-appoint="{{$appointment->id}}"
                                             class="form-control @error('newdoctor') is-invalid @enderror"
                                             name="newdoctor" required>
-                                            <option value="">Select Doctor</option>
                                             @foreach($doctors as $doctor)
                                             <option {{ ($appointment->doctor_id == $doctor['id']) ? 'selected': '' }}
                                                 value="{{ $doctor['id']}}">
@@ -89,6 +71,32 @@
                                             value="{{$department->name}}" readonly />
                                     </div>
                                 </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="date">Appointment Date</label>
+                                        <div class="input-group date" id="dob" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input"
+                                                data-target="#dob" name="dob"
+                                                value="{{(isset($appointment->date)) ? $appointment->date: '' }}"
+                                                required />
+                                            <div class="input-group-append" data-target="#dob"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="time">Appointemnt Time</label>
+                                        <input type="text" name="time" class="form-control" id="time"
+                                            value="{{ $appointment->start_time}}" readonly>
+                                    </div>
+                                </div>
+
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -113,23 +121,41 @@
 </div>
 @endsection
 @section('pagespecificscripts')
+
 <script src="{{ asset('js/required/jquery.validate.min.js') }}" defer></script>
+
+<script src="{{ asset('js/required/moment.min.js') }}"></script>
+<script src="{{ asset('js/required/daterangepicker.js') }}"></script>
+<script src="{{ asset('js/required/tempusdominus-bootstrap-4.min.js')}}"></script>
+
 <script src="{{ asset('/js/required/additional-methods.min.js') }}" defer></script>
 <script src="{{ asset('js/forms/custom-validation.js') }}" defer></script>
 
 <script>
 $(function() {
-    $('#newdoctor').on('change', function() {
-        console.log($(this).attr('data-appoint'));
-        console.log($(this).val());
+    var appointment = null;
+    var date = new Date();
+    date.setDate(date.getDate());
+    $('#dob').datetimepicker({
+        format: 'DD/MM/YYYY',
+        minDate: new Date().setDate(date.getDate() + 1),
+    });
+
+    $('#dob').on("change.datetimepicker", function(e) {
+        window.appointment = moment(e.date).format('YYYY-MM-DD');
+        var e = document.getElementById("newdoctor");
+        var value = e.options[e.selectedIndex].value;
+        var text = e.options[e.selectedIndex].text;
+        console.log('==', value);
         $.ajax({
             type: 'POST',
             url: "{{ route('admin.get.timeslot')}}",
             dataType: 'json',
             data: {
                 '_token': '<?php echo csrf_token() ?>',
-                'appointment': $(this).attr('data-appoint'),
-                'doctorId': $(this).val(),
+                'appointmentDate': window.appointment,
+                'appointment': $('#newdoctor').attr('data-appoint'),
+                'doctorId': $('#newdoctor').val(),
             },
             success: function(data) {
                 if (data.success)

@@ -31,7 +31,6 @@ class PatientController extends Controller
 
     public function index()
     {
-
       if (!Auth::user()->hasAnyRole(['admin','staff'])) return  abort(404) ;
         $patients = Patient::all();
 
@@ -44,6 +43,7 @@ class PatientController extends Controller
 
       if (!Auth::user()->hasAnyRole(['admin','staff']))  return abort(404);
       $patient = Patient::find($id);
+      
       return view('layouts.admin.patient.edit')
           ->with(['patient' => $patient]);
 

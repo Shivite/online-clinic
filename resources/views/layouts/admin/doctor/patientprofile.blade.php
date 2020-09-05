@@ -20,9 +20,8 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="info-box">
-
                     <div class="card card-widget widget-user-2" style="width:100%">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <div class="widget-user-header bg-info">
@@ -86,22 +85,28 @@
                 </div>
             </div>
 
+
+
+        </div>
+        <!--end patient details 12-->
+        @if(Auth::user()->id == $patient->assinged_doc)
+        <div class=" row">
+            <!-- patient video call portion -->
             <div class="col-md-6">
                 @include('layouts.admin.doctor.partial.doctopatientmeeting')
             </div>
-
-        </div>
-        <!-- /.info-box -->
-
-        <div class=" row">
-            <!-- analysis details porttaion start -->
-            <div class="col-md-8">
+            <!-- patient video call portion end-->
+            <!-- analysis details-->
+            <div class="col-md-6">
                 @include('layouts.admin.doctor.partial.patientanalysis')
             </div>
-            <!-- col md 8 end -->
-            <!-- col md 4 starrt -->
+            <!-- analysis details end-->
+        </div>
+
+        <div class=" row">
+            <!-- depatment portions -->
             @if(!empty($departments))
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="card card-info collapsed-card">
                     <div class="card-header">
                         <h3 class="card-title">Department</h3>
@@ -137,18 +142,17 @@
                 </div>
             </div>
             @endif
+            <!-- depatment portions end-->
         </div>
-        <!-- row end -->
-        <!-- analysis details porttaion end -->
 
         <div class="row">
             <!-- old prescription porttaion start -->
-            <div class="col-md-8">
+            <div class="col-md-6">
                 @include('layouts.admin.doctor.partial.oldprescription')
             </div>
-            <!-- col md 8 end -->
-            <!-- col md 4 starrt -->
-            <div class="col-md-4">
+            <!-- old prescription porttaion start end-->
+
+            <div class="col-md-6">
                 <div class="card card-info collapsed-card">
                     <div class="card-header">
                         <h3 class="card-title">Reports</h3>
@@ -159,31 +163,27 @@
                         </div>
                         <!-- /.card-tools -->
                     </div>
-                    <!-- /.card-header -->
+                    <!-- /*pass patient elequent to file*/ -->
                     <div class="card-body" style="display: none;">
-                        <!-- /*pass patient elequent to file*/ -->
+
                         @include('layouts.admin.patient.partial.patientreports')
                     </div>
-                    <!-- /.card-body -->
+                    <!-- /*pass patient end -->
                 </div>
             </div>
         </div>
-        <!-- row end -->
-        <!-- Old prescriptoin end-->
 
         <div class="row">
             <!-- New Prescription porttaion start -->
             <div class="col-md-12">
                 @include('layouts.admin.doctor.partial.newprescription')
             </div>
-            <!-- col md 8 end -->
+            <!-- New Prescription porttaion end -->
 
         </div>
-        <!-- row end -->
+        @endif
     </div>
-    <!-- /.row -->
 </div>
-<!-- /.container-fluid -->
 </div>
 </div>
 @endsection

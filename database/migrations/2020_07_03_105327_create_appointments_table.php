@@ -29,6 +29,8 @@ class CreateAppointmentsTable extends Migration
             $table->boolean('reschedule_status')->default(0);
             $table->boolean('isCurrentlyActive')->nullable();
             $table->string('isalopathy')->nullable();
+            $table->string('isrefered')->nullable();
+            $table->string('isactive')->nullable();
             $table->string('isbooked')->default("booked");
             $table->boolean('isCancelled')->default(false);
 

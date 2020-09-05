@@ -28,9 +28,11 @@ class CreateAnalysisSecondsTable extends Migration
             $table->text("sweet_reduce_pain")->nullable();
             $table->string("during_sleep")->nullable();
             $table->text("position_sleep")->nullable();
+            $table->text("after_sleep")->nullable();
             $table->text("frequency")->nullable();
             $table->text("character")->nullable();
             $table->text("U_frequency")->nullable();
+            $table->text("U_character")->nullable();
             $table->string('_token',100);
             $table->timestamps();
         });

@@ -25,24 +25,30 @@ DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         $adminRole = Role::where('name', 'admin')->first();
         $doctorRole = Role::where('name', 'doctor')->first();
         $patientRole = Role::where('name', 'patient')->first();
+        $staffRole = Role::where('name', 'staff')->first();
 
         $admin = User::create([
           'name'    => 'Admin User',
           'email'   => 'admin@prmedication.com',
           'password'=> Hash::make('password')
         ]);
-        // $doctor = User::create([
-        //   'name'    => 'Test Doctor1',
-        //   'email'   => 'doctor1@prmedication.com',
-        //   'password'=> Hash::make('password')
-        // ]);
-        // $patient = User::create([
-        //   'name'    => 'Test Paitent1',
-        //   'email'   => 'patient1@prmedication.com',
-        //   'password'=> Hash::make('password')
-        // ]);
+
+        $staff1 = User::create([
+          'name'    => 'Staff 1',
+          'email'   => 'staf1@prmedication.com',
+          'password'=> Hash::make('password')
+        ]);
+        $staff2 = User::create([
+          'name'    => 'Staff 2',
+          'email'   => 'staf2@prmedication.com',
+          'password'=> Hash::make('password')
+        ]);
+        
 
         $admin->roles()->attach($adminRole);
+        $staff1->roles()->attach($staffRole);
+        $staff2->roles()->attach($staffRole);
+        
         // $doctor->roles()->attach($doctorRole);
         // $patient->roles()->attach($patientRole);
 

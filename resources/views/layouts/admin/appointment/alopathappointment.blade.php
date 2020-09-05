@@ -40,6 +40,7 @@
                                     <div class="form-group">
                                         <label for="Name">Patient Name</label>
                                         <input type="hidden" name="islopathy" value="1" />
+                                        <input type="hidden" name="patient_id" value="{{$patient->id}}" />
                                         <input id="name" type="text" class="form-control" name="name"
                                             value="{{ $patient->name }}" readonly>
                                     </div>

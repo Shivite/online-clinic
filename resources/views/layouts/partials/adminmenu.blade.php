@@ -90,6 +90,25 @@
                         </p>
                     </a>
                 </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('admin.department.fee')}}" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Department Fee
+                            <!-- <span class="right badge badge-danger">New</span> -->
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.patient.transferrequest')}}" class="nav-link">
+                        <i class="nav-icon fas fa-user"></i>
+                        <p>
+                            Transfer Request
+                            <!-- <span class="right badge badge-danger">New</span> -->
+                        </p>
+                    </a>
+                </li>
                 @endif
 
 

@@ -11,7 +11,8 @@ use App\Priscription;
 
 use File;
 use Image;
-   use Auth;
+use Auth;
+use Mail;
 use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Brian2694\Toastr\Facades\Toastr;  
 use Illuminate\Foundation\Auth\RegistersUsers;
+use App\Mail\sendNewPatientRegisterinfoMail;
 class PatientController extends Controller
 {
     public function __construct()  {
@@ -35,10 +37,13 @@ class PatientController extends Controller
     /*get available time slots starts */
 
     public function postRegisterGetAppointmentTimeSlots(Request $request){
-        $patient = $request->session()->get('patient');
-      /* get the doctor list with the selected department */
+      
+      $patient = $request->session()->get('patient');
+      if(isset($patient->is_covid))
+        $departmentUsers = Department::find(2)->users()->get();
+        else
+          $departmentUsers = Department::find($patient->department)->users()->get();
       $selectedDate = $request->appointment;
-      $departmentUsers = Department::find($patient->department)->users()->get();
       $deptDocIds = [];
       foreach($departmentUsers as $deptUser){
           if(!empty($deptUser->doctor))
@@ -47,7 +52,6 @@ class PatientController extends Controller
       if(empty($deptDocIds)){
         return response()->json(array('success' => false, 'error' => "Doctor assignment failed!"));  
       }
-
       foreach($deptDocIds as $deptDocId){
         $timeSlots = array('08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30',
         '14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30');
@@ -70,7 +74,6 @@ class PatientController extends Controller
     /*get available timeslot end*/
 
     /*book/appoint doctor to patient start*/
-
     /*generate order */
     public function postRegisterAppointment(Request $request){
       // dd($request->post());
@@ -116,7 +119,10 @@ class PatientController extends Controller
     /*book/appoint doctor to patient ends*/
     public function index( Request $request)
     {
-
+        if(Auth::check()){
+          Toastr::info('You are already a member! Please Logout for this operation!:', 'Info');
+          return redirect()->back();
+        }
         $patient = $request->session()->get('patient');
         return view('layouts.patient.registerpatient')->with('patient',$patient);
     }
@@ -124,7 +130,10 @@ class PatientController extends Controller
    public function postResiterPatient(Request $request)
    {
      // echo "here"; die;
-
+        if(Auth::check()){
+          Toastr::error('You are already a member! Please Logout for this operation!:', 'Error');
+          return redirect()->back();
+        }
        $validatedData = $request->validate([
             "title" => "required",
             "name" => "required",
@@ -162,6 +171,9 @@ class PatientController extends Controller
            $patient->fill($validatedData);
            $patient->hashPassword = Hash::make($patient->password);
            $request->session()->put('patient', $patient);
+          //  dd($patient);
+            //send mail to company
+          //  Mail:: to('info@prmedication.com')->send(new sendNewPatientRegisterinfoMail($patient));
        }
        // dd($patient);
        return redirect('registration/department');
@@ -170,7 +182,7 @@ class PatientController extends Controller
 
    public function registerDepartment(Request $request)
     {
-        $departments = Department::all();
+        $departments = Department::where('id', '<>', 3)->get();
         return view('layouts.patient.registerdepartment')->with(['departments' => $departments]);
     }
 
@@ -179,6 +191,9 @@ class PatientController extends Controller
        $patient = $request->session()->get('patient');
        $patient->disease = $request->diseaseId;
        $patient->department = $request->departmentId;
+        if($patient->department == 1){
+          $patient->is_covid = 1;
+       }       
        $request->session()->put('patient', $patient);
        return response()->json([
          'success'=>true,
@@ -294,6 +309,7 @@ class PatientController extends Controller
 
     public function razorPaymentComplete(Request $request){
       // echo "<pre>"; print_r($request->post());
+      
       $order = array();
       $order['rzp_paymentid'] = $request->rzp_paymentid;
       $order['rzp_orderid'] = $request->rzp_orderid ;
@@ -305,23 +321,24 @@ class PatientController extends Controller
       $order['contactNumber'] = $request->contactNumber ;
       $order['description'] = $request->description ;
       $order['amount'] = $request->amount ;
-      $patient = $request->session()->get('patient');
+      if(Auth::check() && Auth::user()->hasRole(['patient']))
+        $patient = Auth::user();
+      else
+        $patient = $request->session()->get('patient');
       $_signatureStatus= $this->signatureVarify(  $request->rzp_paymentid,  $request->rzp_orderid,  $request->rzp_signature);
-
       if($_signatureStatus == true){
-         $patientregister = $this->patientRegister($patient, $order);
-        if($patientregister){
+        if(!Auth::check() || !Auth::user()->hasRole(['patient'])){
+          $patientregister = $this->patientRegister($patient, $order);
           $request->session()->forget('patient');
+          // session()->forget('patient');
           unset($patient);
           unset($order);
-          return response()->json([
-            'success'=>true,
-            'url'=> route('payment.success')
-          ]);
         }
-
+        return response()->json([
+          'success'=>true,
+          'url'=> route('payment.success')
+        ]);
       }
-
       else
         return response()->json([
           'success'=>false,
@@ -342,14 +359,31 @@ class PatientController extends Controller
     }
 
     protected function patientRegister($patient,  $order){
+      
+      if($patient->rerequest){
+          $user = $patient->user;
+          $payment = new Payment;
+          $payment->contact = $order['contactNumber'] ;
+          $payment->email = $order['email'] ;
+          $payment->amount = $order['amount'] ;
+          $payment->rzp_paymentid = $order['rzp_paymentid'] ;
+          $payment->rzp_orderid = $order['rzp_orderid'] ;
+          $payment->rzp_signature = $order['rzp_signature'] ;
+          $payment->token = $order['_token'] ;
+          $payment->description = $order['description'] ;
+          $payment->save();
+          $user->payments()->attach($payment);
+      }
+      
       $dob = new \DateTime($patient->dob);;
       $dob = $dob->format('Y-m-d H:i:s');
+      
       $user = new User;
       $user->name = $patient->name;
       $user->email = $patient->email;
       $user->password = $patient->hashPassword;
       $role = Role::where('name', 'patient')->get();
-      $department = Department::find($patient->department);
+
       $newPatient = new Patient;
       $newPatient->title = $patient->title;
       $newPatient->name  =      $patient->name     ;
@@ -371,10 +405,14 @@ class PatientController extends Controller
       $newPatient->marital    =     $patient->marital     ;
       $newPatient->photo    =     $patient->photo      ;
       $newPatient->proof    =     $patient->proof     ;
-      
+
+      if(isset($patient->is_covid)){
+        $newPatient->is_covid = $patient->is_covid;
+        $patient->department = 2;
+      }
+      $department = Department::find($patient->department);
       if ($user->save())
       {
-
           $user->roles()->attach($role);
           /*payment create first*/$payment = new Payment;
           $payment->contact = $order['contactNumber'] ;
@@ -392,7 +430,10 @@ class PatientController extends Controller
           $user->departments()->attach($department);
           if($user->patient()->save($newPatient)){
               /*appointment insert*/
-              $departmentUsers = Department::find($patient->department)->users()->get();
+              if(isset($patient->is_covid))
+                $departmentUsers = Department::find(2)->users()->get();
+              else
+                $departmentUsers = Department::find($patient->department)->users()->get();
               $deptDocIds = [];
               foreach($departmentUsers as $deptUser){
                   if(!empty($deptUser->doctor))
@@ -405,20 +446,24 @@ class PatientController extends Controller
                 ->where('start_time', $patient->appointmentTime)
                 ->whereDay('date', '=', date("d", strtotime($patient->appointmentDate)))
                 ->get()->toArray();
+       
                 if(empty($freeTimeslot)){
                   $appointment = new Appointment;
                   $appointment->patient_id = $newPatient->id;
                   $appointment->doctor_id = $deptDocId;
-                  $appointment->patient_id = '1';
                   $appointment->date = date("Y-m-d", strtotime($patient->appointmentDate));
                   $appointment->start_time = $patient->appointmentTime;
                   $appointment->isBooked = "yes";
                   $appointment->isCancelled = 0;
+                  $newPatient->assinged_doc = $deptDocId;
+                  $newPatient->save();
                   if($appointment->Save()) break;
                 }
+                
                 else{
                   Toastr::info('Success Response Our Team Will Contact You Soon!:', 'Success');
                 }
+       
               }//foreach end
               /*appointment insert end*/
             if(!empty($patient->reports)){
@@ -429,7 +474,7 @@ class PatientController extends Controller
                 $newPatient->reports()->attach($report);
               }
             }///!empty reprts check end
-            $user->sendEmailVerificationNotification();
+            // $user->sendEmailVerificationNotification();
  
           }
       }
@@ -464,8 +509,26 @@ class PatientController extends Controller
     
         return view('layouts.admin.patient.profile')->with(compact('patient','prescriptions','appointments'));
       }
+      
+      /* after transfer get new appointment view for patienr*/
+      public function getPatientNewAppointment(Request $request){
+        if (!Auth::user()->hasRole(['patient']))  return abort(404);
+        $request->session()->forget('patient');
+        $patient = Patient::select('patients.*', 'users.name as name')
+        ->leftJoin('users', 'patients.user_id', '=', 'users.id')
+        ->where('user_id', Auth::user()->id)->get();
+        $department = $patient[0]->user->departments[0]->id;
+        $patient = $patient[0];
+        $patient['department'] = $department;
+        $patient['dept_change_status'] == 'success';
+        $patient['rerequest'] = true;
+        // $patient = $patient->toArray();
+          $request->session()->put('patient', $patient);
+          return view('layouts.patient.registerappintment')->with(compact('patient'));
 
-
+      }
+      /*patient new appointment end*/
 
       
+     
 }

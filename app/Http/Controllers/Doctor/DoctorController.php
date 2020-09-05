@@ -115,14 +115,16 @@ class DoctorController extends Controller
     }
 
     public function patientProfile($patientId){
-        // dd(Auth::user()->id);
+        if(!Auth::user()->hasRole('doctor')) return abort(404);
         $patient = Patient::find($patientId);
         //today appointments
         $appointments = Appointment::where('patient_id',$patientId)
         ->where('doctor_id', Auth::user()->doctor->id)
         ->whereDate('date', '=', Carbon::today()->toDateString())
         ->where('status', '<>', 'success')
+        ->where('is_active', '==', 1)
         ->get();
+        //fetch all prescription
         $prescriptions = Priscription::select('priscriptions.*', 'users.name as doctorName', 'users.email as doctorEmail', 'doctors.sign as doctorSignature', 'doctors.specialization as doctorSpecialization')
             ->leftJoin('doctors', 'doctors.id', '=', 'priscriptions.doctor_id')
             ->leftJoin('users', 'users.id', '=', 'doctors.user_id')
@@ -168,6 +170,10 @@ class DoctorController extends Controller
         if (!Auth::user()->hasRole(['doctor']))  return abort(404);
         if(!empty($request->prescription)){
             $patient = Patient::find($request->patientId);
+            if($patient->assinged_doc != Auth::user()->id){
+                Toastr::error('Access Denied! :', 'Error');
+                return redirect()->back();
+            }
             $prescription = New Priscription;
             $prescription->patient_id = $request->patientId;
             $prescription->doctor_id = Auth::user()->doctor->id;
@@ -221,13 +227,14 @@ class DoctorController extends Controller
     }
     
     public function searchWithId(Request $request){
+        
         if (!Auth::user()->hasRole(['doctor'])) return  abort(404) ;
         if(empty($request->patientId)){
             Toastr::error('Somthing Went Wrong :', 'Error');
         }else{
-            $appointments = Appointment::where('doctor_id', Auth::user()->doctor->id)
-            ->where('patient_id', $request->patientId)->get();
             
+            $appointments = Appointment::where('doctor_id', Auth::user()->id)
+            ->where('patient_id', $request->patientId)->get();
             if(count($appointments)){
                 return redirect()->route('doctor.patient.profile', $request->patientId);
             }
@@ -237,14 +244,26 @@ class DoctorController extends Controller
     }
     /* doctor search to patinet bu id end */
 
-    /*doctorchange patient department */
+    /*department change / check for covid or alopathy else null*/
     public function changeDepartment(Request $request, Patient $patient){
-        // dd($request->post());
-        $user = $patient->user;
+        if (!Auth::user()->hasAnyRole(['doctor','admin'])) return  abort(404) ;
+        if($patient->assinged_doc != Auth::user()->id){
+            Toastr::error('Access Denied! :', 'Error');
+            return redirect()->back();
+        }
+        $user = $patient->user ;
         $depId = $patient->user->departments[0];
+        if($request->department_ == $depId->id){
+            Toastr::error('Patient is already in the selected department :', 'Error');
+                return redirect()->back();
+        }
+        
         if($user->departments()->detach($depId)){
                $user->departments()->attach($request->department_);
-               $patient->is_alopathy = 1;
+               $patient->is_alopathy = ($request->department_ == 3) ? true : null;;
+               $patient->is_covid = ($request->department_ == 1) ? true : null;;
+               $patient->is_department_change = 'requested';
+               $patient->dept_change_by = Auth::user()->id;  
                $patient->save();
                Toastr::success('Patient Department Changed Successfully :', 'Success');
                 return redirect()->back();

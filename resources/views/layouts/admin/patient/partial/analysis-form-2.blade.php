@@ -78,11 +78,13 @@
         <div class="form-group">
             <label>Sweeting Increase The Pain</label>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="sweet_increase_pain" value="yes">
+                <input class="form-check-input" type="radio" name="sweet_increase_pain" value="yes"
+                    {{ (isset($patient->analysisSecond->sweet_increase_pain) && $patient->analysisSecond->sweet_increase_pain == 'yes') ? 'checked': '' }}>
                 <label class="form-check-label">Yes</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="sweet_increase_pain" value="no" checked>
+                <input class="form-check-input" type="radio" name="sweet_increase_pain" value="no"
+                    {{ (isset($patient->analysisSecond->sweet_increase_pain) && $patient->analysisSecond->sweet_increase_pain == 'no') ? 'checked': '' }}>
                 <label class="form-check-label">No</label>
             </div>
         </div>
@@ -92,11 +94,13 @@
         <div class="form-group">
             <label>Sweeting Reduce The Pain</label>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="sweet_reduce_pain" value="yes">
+                <input class="form-check-input" type="radio" value="yes" name="sweet_reduce_pain"
+                    {{ (isset($patient->analysisSecond->sweet_reduce_pain) && $patient->analysisSecond->sweet_reduce_pain == 'yes') ? 'checked': '' }}>
                 <label class="form-check-label">Yes</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="sweet_reduce_pain" value="no" checked>
+                <input class="form-check-input" type="radio" value="no" name="sweet_reduce_pain"
+                    {{ (isset($patient->analysisSecond->sweet_reduce_pain) && $patient->analysisSecond->sweet_reduce_pain == 'no') ? 'checked': '' }}>
                 <label class="form-check-label">No</label>
             </div>
         </div>
@@ -200,15 +204,18 @@
         <div class="form-group">
             <label>How do you feel after a sleep?</label>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="sweet_reduce_pain" value="good">
+                <input class="form-check-input" type="radio" name="after_sleep" value="good"
+                    {{ (isset($patient->analysisSecond->after_sleep) && $patient->analysisSecond->after_sleep == 'good') ? 'checked': '' }}>
                 <label class="form-check-label">Good</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="sweet_reduce_pain" value="bad" checked>
+                <input class="form-check-input" type="radio" name="after_sleep" value="bad"
+                    {{ (isset($patient->analysisSecond->after_sleep) && $patient->analysisSecond->after_sleep == 'bad') ? 'checked': '' }}>
                 <label class="form-check-label">Bad</label>
             </div>
             <div class="form-check">
-                <input class="form-check-input" type="radio" name="sweet_reduce_pain" value="notsure" checked>
+                <input class="form-check-input" type="radio" name="after_sleep" value="notsure"
+                    {{ (isset($patient->analysisSecond->after_sleep) && $patient->analysisSecond->after_sleep =="notsure") ? 'checked': '' }}>
                 <label class="form-check-label">Not Sure</label>
             </div>
         </div>

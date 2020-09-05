@@ -16,6 +16,7 @@ class AnalysisThird extends Model
     "season_like",
     "cloth_choice",
     "inflamanation",
+    "men_inflamanation",
     "bedsheet",
     "periodic_symptoms",
     "moon",
@@ -27,7 +28,7 @@ class AnalysisThird extends Model
     "while_thinking",
     "while_listening",
     "while_practicing",
-    "_token ",
+    "_token",
   ];
 
 

@@ -9,14 +9,14 @@
         <div class="form-group">
             <label>Grandfather's abnormalities (If any)</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_gm_f_disease">{{(isset($patient->analysisFifth->m_gm_f_disease)) ? $patient->analysisFifth->m_gm_f_disease: '' }}</textarea>
+                name="f_gm_f_disease">{{(isset($patient->analysisFifth->f_gm_f_disease)) ? $patient->analysisFifth->f_gm_f_disease: '' }}</textarea>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>Grandfather's Cause Of Death</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_gm_f_death_cause">{{(isset($patient->analysisFifth->m_gm_f_death_cause)) ? $patient->analysisFifth->m_gm_f_death_cause: '' }}</textarea>
+                name="f_gm_f_death_cause">{{(isset($patient->analysisFifth->f_gm_f_death_cause)) ? $patient->analysisFifth->f_gm_f_death_cause: '' }}</textarea>
         </div>
     </div>
 </div>
@@ -25,14 +25,14 @@
         <div class="form-group">
             <label>Grandmother abnormalities (If any)</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_gm_disease">{{(isset($patient->analysisFifth->m_gm_disease)) ? $patient->analysisFifth->m_gm_disease: '' }}</textarea>
+                name="f_gm_disease">{{(isset($patient->analysisFifth->f_gm_disease)) ? $patient->analysisFifth->f_gm_disease: '' }}</textarea>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>Grandmother's cause Of death</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_gm_death_cause">{{(isset($patient->analysisFifth->m_gm_death_cause)) ? $patient->analysisFifth->m_gm_death_cause: '' }}</textarea>
+                name="f_gm_death_cause">{{(isset($patient->analysisFifth->f_gm_death_cause)) ? $patient->analysisFifth->f_gm_death_cause: '' }}</textarea>
         </div>
     </div>
 </div>
@@ -41,14 +41,14 @@
         <div class="form-group">
             <label>Father's abnormalities (If any)</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_f_disease">{{(isset($patient->analysisFifth->m_f_disease)) ? $patient->analysisFifth->m_f_disease: '' }}</textarea>
+                name="f_f_disease">{{(isset($patient->analysisFifth->f_f_disease)) ? $patient->analysisFifth->f_f_disease: '' }}</textarea>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>Father's cause of death</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_f_death_cause">{{(isset($patient->analysisFifth->m_f_death_cause)) ? $patient->analysisFifth->m_f_death_cause: '' }}</textarea>
+                name="f_f_death_cause">{{(isset($patient->analysisFifth->f_f_death_cause)) ? $patient->analysisFifth->f_f_death_cause: '' }}</textarea>
         </div>
     </div>
 </div>
@@ -58,14 +58,14 @@
         <div class="form-group">
             <label>Sibling's abnormalities (If any)</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_u_disease">{{(isset($patient->analysisFifth->m_u_disease)) ? $patient->analysisFifth->m_u_disease: '' }}</textarea>
+                name="f_u_disease">{{(isset($patient->analysisFifth->f_u_disease)) ? $patient->analysisFifth->f_u_disease: '' }}</textarea>
         </div>
     </div>
     <div class="col-md-6">
         <div class="form-group">
             <label>Sibling's cause of death</label>
             <textarea class="form-control" rows="3" placeholder="Enter Information Here"
-                name="f_u_death_cause">{{(isset($patient->analysisFifth->m_u_death_cause)) ? $patient->analysisFifth->m_u_death_cause: '' }}</textarea>
+                name="f_u_death_cause">{{(isset($patient->analysisFifth->f_u_death_cause)) ? $patient->analysisFifth->f_u_death_cause: '' }}</textarea>
         </div>
     </div>
 </div>

@@ -29,7 +29,7 @@ class sendPrescriptionMail extends Mailable
     public function build()
     {
         // dd($this->data);
-        return $this->from('inf@prmedication.com')->subject('Prescription Mail')->view('layouts.email.prescriptionEmailTemplate')->with('data', $this->data);
+        return $this->from('info@prmedication.com')->subject('Prescription Mail')->view('layouts.email.prescriptionEmailTemplate')->with('data', $this->data);
         // return $this->view('view.name');
     }
 }

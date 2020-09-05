@@ -45,31 +45,34 @@ Route::post('/patient/remove-image', 'Patient\PatientController@removeImage');
 Auth::routes(['verify' => true ]);
 
 Route::get('patient/profile', 'Patient\PatientController@profile')->name('patient.profile')->middleware('verified');
+Route::get('patient/new/appointment', 'Patient\PatientController@getPatientNewAppointment')->name('get.patient.new.appointment')->middleware('verified');
 
 Route::get('admin/dashboard', 'Admin\AdminController@index')->name('dashboard')->middleware('verified');
-Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function(){
+Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware('verified')->group(function(){
   Route::resource('/users', 'UserController');
-  
   Route::get('/patient/payments', 'PatientController@patientPayments')->name('patient.payments');;
+  Route::get('/department/fee', 'AdminController@departmentFee')->name('department.fee');;
+  Route::post('/department/fee', 'AdminController@departmentFeeUpdate')->name('fee.update');;
   Route::put('/user/updatepassword', 'UserController@updatepassword')->name('user.updatepassword');
   Route::resource('/patient', 'PatientController');
-  
   Route::put('/patient/analysis-1/{patient}', 'PatientController@analysisFirst')->name('patient.analysis.first');;
   Route::put('/patient/analysis-2/{patient}', 'PatientController@analysisSecond')->name('patient.analysis.second');;
-  Route::put('/patient/analysis-3/{patient}', 'PatientController@analysisThird')->name('patient.analysis.third');;
+  Route::put('/pat  ient/analysis-3/{patient}', 'PatientController@analysisThird')->name('patient.analysis.third');;
   Route::put('/patient/analysis-4/{patient}', 'PatientController@analysisFourth')->name('patient.analysis.fourth');;
   Route::put('/patient/analysis-5/{patient}', 'PatientController@analysisFifth')->name('patient.analysis.fifth');;
   Route::put('/patient/analysis-6/{patient}', 'PatientController@analysisSixth')->name('patient.analysis.sixth');;
   Route::put('/patient/analysis-7/{patient}', 'PatientController@analysisSeventh')->name('patient.analysis.seventh');;
   Route::put('/patient/analysis-8/{patient}', 'PatientController@analysisEight')->name('patient.analysis.eight');;
   Route::post('/patient/newsymptoms', 'PatientController@newSymptoms')->name('patient.new.symptoms');
-
   Route::get('/appointments', 'AdminController@appointments')->name('appointments');
   Route::get('/admin/reappointment/{appointment}', 'AdminController@reappointment')->name('reappointment');
   Route::post('/admin/get/timeslots/', 'AdminController@getTimeSlot')->name('get.timeslot');
+ 
   Route::get('/patient/oncology/patients', 'AdminController@oncologyPatient')->name('patient.oncologyPatients');;
   Route::post('/admin/reschedule/', 'AdminController@reScheduleAppointment')->name('reschedule.appointment');
+  Route::get('/admin/requested/transfered', 'AdminController@requestedTransfer')->name('patient.transferrequest');
   Route::get('/admin/appoint/alopathy/doctor/{patient}', 'AdminController@getAppointAlopathyDoctor')->name('patient.appoint.alopathy.doctor');
+  Route::post('/admin/approve/deparment/{patient}', 'AdminController@postApproveDepartment')->name('approve.deptchange');
 });
 Route::get('doctor/profile', 'Doctor\DoctorController@profile')->name('doctor.profile')->middleware('verified');
 

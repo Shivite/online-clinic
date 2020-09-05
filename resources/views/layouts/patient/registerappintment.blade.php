@@ -14,6 +14,7 @@
                 <div id="appointment_date"></div>
                 <div id="time_slots"></div>
             </div>
+            @if(Auth::user())
             <div class="row">
                 <div class="col-sm-3">
                     <div class="form-group">
@@ -39,6 +40,7 @@
                 </div>
 
             </div>
+            @endIf
         </div>
     </div>
 </div>
