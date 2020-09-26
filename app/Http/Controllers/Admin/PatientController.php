@@ -33,7 +33,6 @@ class PatientController extends Controller
     {
       if (!Auth::user()->hasAnyRole(['admin','staff'])) return  abort(404) ;
         $patients = Patient::all();
-
         return view('layouts.admin.patient.index')
             ->with('patients', $patients);
     }
