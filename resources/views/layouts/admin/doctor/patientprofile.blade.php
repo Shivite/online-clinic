@@ -84,12 +84,9 @@
                     <!-- card end -->
                 </div>
             </div>
-
-
-
         </div>
         <!--end patient details 12-->
-        @if(Auth::user()->id == $patient->assinged_doc)
+        @if(Auth::user()->doctor->id == $patient->assinged_doc)
         <div class=" row">
             <!-- patient video call portion -->
             <div class="col-md-6">

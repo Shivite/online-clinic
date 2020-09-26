@@ -58,7 +58,8 @@
                                             @foreach($doctors as $doctor)
                                             <option {{ ($appointment->doctor_id == $doctor['id']) ? 'selected': '' }}
                                                 value="{{ $doctor['id']}}">
-                                                {{ $doctor['name']}}</option>
+                                                {{ $doctor['name']}}
+                                            </option>
                                             @endforeach
                                         </select>
                                     </div>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
-
+use DB;
 use Auth;
 use Gate;
 use File;
@@ -30,7 +30,8 @@ class UserController extends Controller
     {
 
       if (!Auth::user()->hasAnyRole(['admin','staff'])) return  abort(404) ;
-        $users = $this->allDoctors();
+        $users = $this->allDoctorsUsers();
+        // dd($users);
         return view('layouts.admin.user.index')
             ->with('users', $users);
     }
@@ -206,7 +207,18 @@ class UserController extends Controller
           })
               ->get();
       }
+    public function allDoctorsUsers(){
+        return DB::table('doctors')
+                ->select('users.*','departments.name as departmentName')
+                ->join('users','users.id','=','doctors.user_id')
+                ->join('department_user', 'department_user.user_id','=','users.id')
+                ->join('departments', 'departments.id','=','department_user.department_id')
 
+                
+                ->get();
+ 
+    }
+    
     public function userRoleName($user){
       if ($user->hasRole('admin')) $roleName = 'admin';
       if ($user->hasRole('doctor')) $roleName = 'doctor';

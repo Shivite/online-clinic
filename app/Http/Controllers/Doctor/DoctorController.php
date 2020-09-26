@@ -167,10 +167,10 @@ class DoctorController extends Controller
 
     /* new prescription stor for patient by doctor */
     public function patientNewPrescriptionStore( Request $request){
-        if (!Auth::user()->hasRole(['doctor']))  return abort(404);
+        if(!Auth::user()->hasRole('doctor')) return abort(404);
         if(!empty($request->prescription)){
             $patient = Patient::find($request->patientId);
-            if($patient->assinged_doc != Auth::user()->id){
+            if($patient->assinged_doc != Auth::user()->doctor->id){
                 Toastr::error('Access Denied! :', 'Error');
                 return redirect()->back();
             }
@@ -194,7 +194,7 @@ class DoctorController extends Controller
                 // ->subject("Prescription PR Medication")
                 // });
                 $emails = [$patient->user->email , Auth::user()->email];
-                Mail:: to($emails)->send(new sendPrescriptionMail($data));
+                // Mail:: to($emails)->send(new sendPrescriptionMail($data));
                 Toastr::success('Prescription created Successfully :', 'Success');
                 return redirect()->back();
             }
@@ -247,7 +247,7 @@ class DoctorController extends Controller
     /*department change / check for covid or alopathy else null*/
     public function changeDepartment(Request $request, Patient $patient){
         if (!Auth::user()->hasAnyRole(['doctor','admin'])) return  abort(404) ;
-        if($patient->assinged_doc != Auth::user()->id){
+        if($patient->assinged_doc != Auth::user()->doctor->id){
             Toastr::error('Access Denied! :', 'Error');
             return redirect()->back();
         }
