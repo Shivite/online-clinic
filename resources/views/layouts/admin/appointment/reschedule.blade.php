@@ -50,14 +50,14 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label>Doctor </label>
+                                        <label> Select Doctor </label>
 
                                         <select id="newdoctor" data-appoint="{{$appointment->id}}"
                                             class="form-control @error('newdoctor') is-invalid @enderror"
                                             name="newdoctor" required>
+                                            <option value={{ $appointment->doctor->id }}>Select Doctor</option>
                                             @foreach($doctors as $doctor)
-                                            <option {{ ($appointment->doctor_id == $doctor['id']) ? 'selected': '' }}
-                                                value="{{ $doctor['id']}}">
+                                            <option value="{{ $doctor['id']}}">
                                                 {{ $doctor['name']}}
                                             </option>
                                             @endforeach
@@ -73,23 +73,15 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="date">Appointment Date</label>
-                                        <div class="input-group date" id="dob" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input"
-                                                data-target="#dob" name="dob"
-                                                value="{{(isset($appointment->date)) ? $appointment->date: '' }}"
-                                                required />
-                                            <div class="input-group-append" data-target="#dob"
-                                                data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
+                                        <label for="doctor">Appointment Date </label>
+                                        <input type="text" class="form-control" value="{{ $appointment->date }}"
+                                            readonly>
                                     </div>
                                 </div>
-
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="time">Appointemnt Time</label>
@@ -97,11 +89,29 @@
                                             value="{{ $appointment->start_time}}" readonly>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="date">Select Appointment Date</label>
+                                        <div class="input-group date" id="appointment_date" data-target-input="nearest">
+                                            <input type="text" class="form-control datetimepicker-input"
+                                                data-target="#appointment_date" name="appointment_date" value=""
+                                                required />
+                                            <div class="input-group-append" data-target="#appointment_date"
+                                                data-toggle="datetimepicker">
+                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
                                     <div id="time_slots"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+
                                 </div>
                                 <div class="col-md-6">
                                     <div class="card-footer">
@@ -137,12 +147,12 @@ $(function() {
     var appointment = null;
     var date = new Date();
     date.setDate(date.getDate());
-    $('#dob').datetimepicker({
+    $('#appointment_date').datetimepicker({
         format: 'DD/MM/YYYY',
         minDate: new Date().setDate(date.getDate() + 1),
     });
 
-    $('#dob').on("change.datetimepicker", function(e) {
+    $('#appointment_date').on("change.datetimepicker", function(e) {
         window.appointment = moment(e.date).format('YYYY-MM-DD');
         var e = document.getElementById("newdoctor");
         var value = e.options[e.selectedIndex].value;

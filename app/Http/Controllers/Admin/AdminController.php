@@ -104,13 +104,12 @@ class AdminController extends Controller
         /* reschedule appointment on doctor request */
         else{
             $appointment = Appointment::find($request->appointment);
-            $date = DateTime::createFromFormat('m/d/Y',$request->dob);
+            $date = DateTime::createFromFormat('d/m/Y',$request->appointment_date);
             $appDate = $date->format("Y-m-d");
             if(empty($appointment) || $appointment->reschedule_req != 1){
                 Toastr::error('Appointment not requested for schedule! :', 'Error');
                 return redirect()->back();
             }
- 
             $appointment->reschedule_req = false;
             $appointment->reschedule_status = true;
             $appointment->date = $appDate ;

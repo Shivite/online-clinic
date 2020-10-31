@@ -416,7 +416,7 @@ class PatientController extends Controller
           $user->roles()->attach($role);
           /*payment create first*/$payment = new Payment;
           $payment->contact = $order['contactNumber'] ;
-          $payment->email = $order['email'] ;
+          $payment->email = $user->email ;
           $payment->amount = $order['amount'] ;
           $payment->rzp_paymentid = $order['rzp_paymentid'] ;
           $payment->rzp_orderid = $order['rzp_orderid'] ;
@@ -506,8 +506,12 @@ class PatientController extends Controller
         ->whereDate('date', '=', Carbon::today()->toDateString())
         ->where('status', '<>', 'success')
         ->get();
+
+        $allAppointments =  Appointment::where('patient_id',$patient->id)
+        ->where('status', '<>', 'success')
+        ->get();
     
-        return view('layouts.admin.patient.profile')->with(compact('patient','prescriptions','appointments'));
+        return view('layouts.admin.patient.profile')->with(compact('patient','prescriptions','appointments', 'allAppointments'));
       }
       
       /* after transfer get new appointment view for patienr*/

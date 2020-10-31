@@ -34,7 +34,6 @@
             </form>
         </div>
         @else
-
         <div class="card-body" style="background-image:url('{{asset('images/wait.jpg')}}');
                             background-repeat:no-repeat;background-size: contain; align=center; min-height:373px">
         </div>
@@ -44,7 +43,19 @@
         @else
 
         <div class="card-body" style="background-image:url('{{asset('images/wait.jpg')}}');
-                            background-repeat:no-repeat;background-size: contain; align=center; min-height:373px">
+                              background-repeat:no-repeat;background-size: contain; align=center; min-height:373px">
+            @if(isset($allAppointments) && !$allAppointments->isEmpty())
+
+            <div class="color-palette-set col-md-3 col-sm-4 text-center">
+                @foreach($allAppointments as $appointment)
+
+                <div class="bg-lightblue color-palette"><span class="bg-black disabled color-palette"> Date:
+                    </span><span>{{ $appointment->date}}</span>
+                </div>
+                @endforeach
+            </div>
+
+            @endif
         </div>
         <br>
         @endif
